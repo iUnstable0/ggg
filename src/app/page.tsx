@@ -1,17 +1,17 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 import Image from "next/image";
 
 import Fuse from "fuse.js";
+import axios from "axios";
 
-// import { SketchPicker } from "react-color";
+import { DateTime } from "luxon";
+
 import { RgbaColorPicker } from "react-colorful";
 
 import emojis from "./emojis.json";
-
-import axios from "axios";
 
 import styles from "./page.module.css";
 
@@ -33,7 +33,12 @@ export default function Home() {
   const [font, setFont] = useState("1");
   const [message, setMessage] = useState("Hello, My Goat :red-heart:");
 
+  const [endTime, setEndTime] = useState<string | null>(null);
+  const [timeRemaining, setTimeRemaining] = useState("5:00");
+
   const [searchTerm, setSearchTerm] = useState("");
+
+  const [loading, setLoading] = useState(false);
 
   const [color, setColor] = useState({
     r: 255,
@@ -61,8 +66,55 @@ export default function Home() {
     return result.slice(0, 100).map((r) => r.item);
   }, [searchTerm]);
 
+  useEffect(() => {
+    if (!endTime) {
+      return;
+    }
+
+    const endDate = DateTime.fromISO(endTime);
+
+    const interval = setInterval(() => {
+      const diff = endDate.diff(DateTime.now(), ["minutes", "seconds"]);
+
+      setTimeRemaining(`${diff.minutes}:${Math.round(diff.seconds)}`);
+    }, 500);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [endTime]);
+
+  const deleteGoat = async () => {
+    const goatName = goatedImage.split("/").pop();
+
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/delete`,
+        {
+          name: goatName,
+        },
+      );
+
+      console.log(res.data);
+    } catch (error) {
+      console.error(
+        "Error deleting old goat lol it will delete on its own anyway ",
+      );
+    }
+  };
+
   const previewGoat = async () => {
+    if (loading) return;
+
     if (!file) return;
+
+    setLoading(true);
+
+    if (goatedImage) {
+      // alert("overwrite");
+
+      await deleteGoat();
+    }
 
     const formData = new FormData();
     formData.append("file", file);
@@ -100,10 +152,14 @@ export default function Home() {
       setGoatedImage(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/files/${encodeURIComponent(res.data.filename)}`,
       );
+
+      setEndTime(DateTime.now().plus({ minutes: 5 }).toISO());
     } catch (error) {
       console.error("Error generating goated image:", error);
       alert("Failed to generate goated image. Please try again.");
     }
+
+    setLoading(false);
   };
 
   return (
@@ -115,6 +171,7 @@ export default function Home() {
       <input
         type={"file"}
         accept={"image/*"}
+        id="img"
         className={styles.fileInput}
         multiple={false}
         onInput={(e) => {
@@ -125,6 +182,10 @@ export default function Home() {
           setFile(file);
         }}
       />
+      <label htmlFor={"img"} className={styles.chooseFile}>
+        Click here to choose file
+      </label>
+      {`file chosen: ${file?.name || "no file chosen"}`}
 
       <div className={styles.previewGroup}>
         <div className={styles.previewCtn}>
@@ -165,7 +226,13 @@ export default function Home() {
 
       {imageUrl && (
         <div className={styles.bottombar}>
-          <button onClick={previewGoat}>Click to preview goated image</button>
+          <button onClick={previewGoat} disabled={loading}>
+            {loading
+              ? "Loading, please wait..."
+              : "Click to preview goated image"}
+          </button>
+          <p>All files expire in 5 minutes after generation</p>
+          {endTime && <p>Expiry timer: {timeRemaining}</p>}
 
           <p className={styles.bottombartext}>
             what should each compression quality be?
@@ -351,7 +418,13 @@ export default function Home() {
 
       {imageUrl && (
         <div className={styles.bottombar}>
-          <button onClick={previewGoat}>Click to preview goated image</button>
+          <button onClick={previewGoat} disabled={loading}>
+            {loading
+              ? "Loading, please wait..."
+              : "Click to preview goated image"}
+          </button>
+          <p>All files expire in 5 minutes after generation</p>
+          {endTime && <p>Expiry timer: {timeRemaining}</p>}
         </div>
       )}
 
@@ -392,6 +465,29 @@ export default function Home() {
             )}
           </div>
         </div>
+      )}
+
+      {file && (
+        <>
+          <input
+            type={"file"}
+            accept={"image/*"}
+            id="img"
+            className={styles.fileInput}
+            multiple={false}
+            onInput={(e) => {
+              // alert("file");
+              const file = (e.target as HTMLInputElement).files?.[0];
+              if (!file) return;
+
+              setFile(file);
+            }}
+          />
+          <label htmlFor={"img"} className={styles.chooseFile}>
+            Click here to choose file
+          </label>
+          {`file chosen: ${file?.name || "no file chosen"}`}
+        </>
       )}
     </div>
   );
