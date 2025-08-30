@@ -72,3 +72,20 @@
   font-weight: 600;
   color: #aab223;
 }
+
+.emojiCtn {
+  width: 200px;
+  height: 300px;
+
+  outline: 2px solid #989898;
+
+  overflow: auto;
+  /*overflow-x: hidden;*/
+}
+
+.emojiImg {
+  width: 25px;
+  height: 25px;
+
+  object-fit: contain;
+}

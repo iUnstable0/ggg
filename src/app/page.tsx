@@ -2,13 +2,20 @@
 
 import { useState, useMemo } from "react";
 
+import Image from "next/image";
+
+import Fuse from "fuse.js";
+
 // import { SketchPicker } from "react-color";
 import { RgbaColorPicker } from "react-colorful";
+
+import emojis from "./emojis.json";
 
 import axios from "axios";
 
 import styles from "./page.module.css";
-import Image from "next/image";
+
+const fuse = new Fuse(emojis, {});
 
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
@@ -24,7 +31,9 @@ export default function Home() {
   const [ghostpacify, setGhostpacify] = useState("0.5");
   const [ghostshit, setGhostshit] = useState("10");
   const [font, setFont] = useState("1");
-  const [message, setMessage] = useState("Hello, My Goat ❤️");
+  const [message, setMessage] = useState("Hello, My Goat :red-heart:");
+
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [color, setColor] = useState({
     r: 255,
@@ -37,6 +46,20 @@ export default function Home() {
     if (!file) return null;
     return URL.createObjectURL(file);
   }, [file]);
+
+  const searchResults = useMemo(() => {
+    if (searchTerm.length < 2) {
+      return ["Search term minimum 2 characters"];
+    }
+
+    const result = fuse.search(searchTerm);
+
+    if (result.length === 0) {
+      return ["No results found"];
+    }
+
+    return result.slice(0, 100).map((r) => r.item);
+  }, [searchTerm]);
 
   const previewGoat = async () => {
     if (!file) return;
@@ -55,10 +78,11 @@ export default function Home() {
     formData.append("ghostshit", ghostshit);
     formData.append("font", font);
     formData.append("message", message);
-    // formData.append("r", color.r.toString());
-    // formData.append("g", color.g.toString());
-    // formData.append("b", color.b.toString());
-    // formData.append("a", Math.round(color.a * 255).toString());
+
+    formData.append("r", color.r.toString());
+    formData.append("g", color.g.toString());
+    formData.append("b", color.b.toString());
+    formData.append("a", Math.round(color.a * 255).toString());
 
     try {
       const res = await axios.post(
@@ -124,7 +148,7 @@ export default function Home() {
         <div className={styles.previewCtn}>
           {!goatedImage && (
             <div className={styles.noImage}>
-              press the preview button to preview the goated image!
+              press the preview button to preview the goated image
             </div>
           )}
           {goatedImage && (
@@ -141,7 +165,7 @@ export default function Home() {
 
       {imageUrl && (
         <div className={styles.bottombar}>
-          <button onClick={previewGoat}>Click to preview goated image!</button>
+          <button onClick={previewGoat}>Click to preview goated image</button>
 
           <p className={styles.bottombartext}>
             what should each compression quality be?
@@ -296,12 +320,77 @@ export default function Home() {
               onChange={(e) => setMessage(e.target.value)}
             />
           </div>
+
+          <p className={styles.bottombartext}>EMOJI SEARCH</p>
+          <div className={styles.bottombaritem}>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+
+            <div className={styles.emojiCtn}>
+              {searchResults.map((r) => (
+                <div key={r}>
+                  <Image
+                    src={`/emojis/${r}.png`}
+                    alt={""}
+                    className={styles.emojiImg}
+                    width={25}
+                    height={25}
+                    loading={"lazy"}
+                    decoding={"async"}
+                  />
+                  {r}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       )}
 
       {imageUrl && (
         <div className={styles.bottombar}>
-          <button onClick={previewGoat}>Click to preview goated image!</button>
+          <button onClick={previewGoat}>Click to preview goated image</button>
+        </div>
+      )}
+
+      {file && (
+        <div className={styles.previewGroup}>
+          <div className={styles.previewCtn}>
+            {!imageUrl && (
+              <div className={styles.noImage}>
+                selected image will be shown here
+              </div>
+            )}
+            {imageUrl && (
+              <Image
+                src={imageUrl}
+                alt={"Image preview"}
+                width={100}
+                height={100}
+                className={styles.image}
+              />
+            )}
+          </div>
+          {"=>"}
+
+          <div className={styles.previewCtn}>
+            {!goatedImage && (
+              <div className={styles.noImage}>
+                press the preview button to preview the goated image
+              </div>
+            )}
+            {goatedImage && (
+              <Image
+                src={goatedImage}
+                alt={"Goat preview"}
+                width={100}
+                height={100}
+                className={styles.image}
+              />
+            )}
+          </div>
         </div>
       )}
     </div>
