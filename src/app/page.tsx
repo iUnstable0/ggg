@@ -2,6 +2,9 @@
 
 import { useState, useMemo } from "react";
 
+// import { SketchPicker } from "react-color";
+import { RgbaColorPicker } from "react-colorful";
+
 import axios from "axios";
 
 import styles from "./page.module.css";
@@ -10,6 +13,25 @@ import Image from "next/image";
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
   const [goatedImage, setGoatedImage] = useState<string | null>(null);
+
+  const [quality, setQuality] = useState("20");
+  const [loops, setLoops] = useState("3");
+  const [subsample, setSubsample] = useState("2");
+  const [posterizebits, setPosterizebits] = useState(true);
+  const [brightness, setBrightness] = useState("1");
+  const [contrast, setContrast] = useState("1");
+  const [ghost, setGhost] = useState(true);
+  const [ghostpacify, setGhostpacify] = useState("0.5");
+  const [ghostshit, setGhostshit] = useState("10");
+  const [font, setFont] = useState("1");
+  const [message, setMessage] = useState("Hello, My Goat ❤️");
+
+  const [color, setColor] = useState({
+    r: 255,
+    g: 255,
+    b: 255,
+    a: 1,
+  });
 
   const imageUrl = useMemo(() => {
     if (!file) return null;
@@ -21,8 +43,22 @@ export default function Home() {
 
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("message", "Hello, My Goat :red-heart:");
-    formData.append("brightness", "0.8");
+
+    formData.append("quality", quality);
+    formData.append("loops", loops);
+    formData.append("subsample", subsample);
+    formData.append("posterizebits", posterizebits.toString());
+    formData.append("brightness", brightness);
+    formData.append("contrast", contrast);
+    formData.append("ghost", ghost.toString());
+    formData.append("ghostpacify", ghostpacify);
+    formData.append("ghostshit", ghostshit);
+    formData.append("font", font);
+    formData.append("message", message);
+    // formData.append("r", color.r.toString());
+    // formData.append("g", color.g.toString());
+    // formData.append("b", color.b.toString());
+    // formData.append("a", Math.round(color.a * 255).toString());
 
     try {
       const res = await axios.post(
@@ -37,7 +73,9 @@ export default function Home() {
 
       console.log(res.data);
 
-      // setGoatedImage(url);
+      setGoatedImage(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/files/${encodeURIComponent(res.data.filename)}`,
+      );
     } catch (error) {
       console.error("Error generating goated image:", error);
       alert("Failed to generate goated image. Please try again.");
@@ -102,7 +140,169 @@ export default function Home() {
       </div>
 
       {imageUrl && (
-        <button onClick={previewGoat}>Click to preview goated image!</button>
+        <div className={styles.bottombar}>
+          <button onClick={previewGoat}>Click to preview goated image!</button>
+
+          <p className={styles.bottombartext}>
+            what should each compression quality be?
+          </p>
+          <div className={styles.bottombaritem}>
+            <p>{quality}</p>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              step="1"
+              defaultValue="20"
+              onChange={(e) => setQuality(e.target.value)}
+            />
+          </div>
+
+          <p className={styles.bottombartext}>
+            how many times should it be compressed?
+          </p>
+          <div className={styles.bottombaritem}>
+            <p>{loops}</p>
+            <input
+              type="range"
+              min="0"
+              max="10"
+              step="1"
+              defaultValue="3"
+              onChange={(e) => setLoops(e.target.value)}
+            />
+          </div>
+
+          <p className={styles.bottombartext}>
+            subsample (0=keep all colors, 1=less colors, 2=least colors):{" "}
+          </p>
+          <div className={styles.bottombaritem}>
+            <p>{subsample}</p>
+            <input
+              type="range"
+              min="0"
+              max="2"
+              step="1"
+              defaultValue="2"
+              onChange={(e) => setSubsample(e.target.value)}
+            />{" "}
+          </div>
+
+          <p className={styles.bottombartext}>
+            posterize bits (off = keep all colors, on = less colors):{" "}
+          </p>
+          <div className={styles.bottombaritem}>
+            {posterizebits ? "on" : "off"}
+            <input
+              type="checkbox"
+              checked={posterizebits}
+              onChange={(e) => setPosterizebits(e.target.checked)}
+            />
+          </div>
+
+          <p className={styles.bottombartext}>brightness</p>
+          <div className={styles.bottombaritem}>
+            <p>{brightness}</p>
+            <input
+              type="range"
+              min="0"
+              max="2"
+              step="0.1"
+              defaultValue="1"
+              onChange={(e) => setBrightness(e.target.value)}
+            />
+          </div>
+
+          <p className={styles.bottombartext}>contrast</p>
+          <div className={styles.bottombaritem}>
+            <p>{contrast}</p>
+            <input
+              type="range"
+              min="0"
+              max="2"
+              step="0.1"
+              defaultValue="1"
+              onChange={(e) => setContrast(e.target.value)}
+            />
+          </div>
+
+          <p className={styles.bottombartext}>
+            ghost (adds ghosting effect, like old VHS tapes (clone image, paste
+            on top with random shift to a direction and opacity set to 0.5))
+          </p>
+          <div className={styles.bottombaritem}>
+            {ghost ? "on" : "off"}
+            <input
+              type="checkbox"
+              checked={ghost}
+              onChange={(e) => setGhost(e.target.checked)}
+            />
+          </div>
+
+          <p className={styles.bottombartext}>
+            ghost opacity (how much opacity the ghost has, 0 = invisible, 1 =
+            fully visible)
+          </p>
+          <div className={styles.bottombaritem}>
+            <p>{ghostpacify}</p>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.1"
+              defaultValue="0.5"
+              onChange={(e) => setGhostpacify(e.target.value)}
+            />
+          </div>
+
+          <p className={styles.bottombartext}>
+            ghost shift (how much the ghost shifts, in pixels)
+          </p>
+          <div className={styles.bottombaritem}>
+            <p>{ghostshit}</p>
+            <input
+              type="range"
+              min="0"
+              max="50"
+              step="1"
+              defaultValue="10"
+              onChange={(e) => setGhostshit(e.target.value)}
+            />
+          </div>
+
+          <p className={styles.bottombartext}>
+            font (1-4, font style to use for the message):{" "}
+          </p>
+          <div className={styles.bottombaritem}>
+            <p>{font}</p>
+            <input
+              type="range"
+              min="1"
+              max="4"
+              step="1"
+              defaultValue="1"
+              onChange={(e) => setFont(e.target.value)}
+            />
+          </div>
+
+          <p className={styles.bottombartext}>Text color</p>
+          <RgbaColorPicker color={color} onChange={setColor} />
+
+          <p className={styles.bottombartext}>message to write:</p>
+          <div className={styles.bottombaritem}>
+            <input
+              type="text"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+            />
+          </div>
+        </div>
+      )}
+
+      {imageUrl && (
+        <div className={styles.bottombar}>
+          <button onClick={previewGoat}>Click to preview goated image!</button>
+        </div>
       )}
     </div>
   );
