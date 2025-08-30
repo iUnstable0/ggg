@@ -18,16 +18,38 @@ import Cursor from "@/components/cursor";
 import emojis from "./emojis.json";
 
 import styles from "./page.module.css";
+import { SlidingNumber } from "@/components/sliding-number";
 
 const fuse = new Fuse(emojis, {});
 
 export default function Home() {
-  const [playHarp] = useSound("/sounds/harp.wav");
-  const [playRain] = useSound("/sounds/rain.wav");
-  const [playDust] = useSound("/sounds/dust.wav");
-  const [playStar] = useSound("/sounds/star.wav");
-  const [playSparkle] = useSound("/sounds/sparkle.wav");
-  const [playTsHurtMyEars] = useSound("/sounds/tshurtmyears.wav");
+  const [playHarp] = useSound("/sounds/harp.wav", {
+    interrupt: true,
+  });
+  const [playRain] = useSound("/sounds/rain.wav", {
+    interrupt: true,
+  });
+  const [playDust] = useSound("/sounds/dust.wav", {
+    interrupt: true,
+  });
+  const [playStar] = useSound("/sounds/star.wav", {
+    interrupt: true,
+  });
+  const [playSparkle] = useSound("/sounds/sparkle.wav", {
+    interrupt: true,
+  });
+  const [playTsHurtMyEars] = useSound("/sounds/tshurtmyears.wav", {
+    interrupt: true,
+  });
+  const [playAww] = useSound("/sounds/aww.wav", {
+    interrupt: true,
+  });
+  const [playFart] = useSound("/sounds/fart.wav", {
+    interrupt: true,
+  });
+  const [playPoop] = useSound("/sounds/poop.wav", {
+    interrupt: true,
+  });
 
   const [file, setFile] = useState<File | null>(null);
   const [goatedImage, setGoatedImage] = useState<string | null>(null);
@@ -71,14 +93,14 @@ export default function Home() {
   }, [file]);
 
   const searchResults = useMemo(() => {
-    if (searchTerm.length < 2) {
-      return ["Search term minimum 2 characters"];
-    }
+    // if (searchTerm.length < 2) {
+    //   return ["Search term minimum 2 characters"];
+    // }
 
     const result = fuse.search(searchTerm);
 
     if (result.length === 0) {
-      return ["No results found"];
+      return emojis.slice(0, 100);
     }
 
     return result.slice(0, 100).map((r) => r.item);
@@ -105,7 +127,7 @@ export default function Home() {
     if (isPrincess) {
       const prev = document.body.style.cursor;
 
-      document.body.style.cursor = "none";
+      document.body.style.cursor = "none !important";
 
       return () => {
         document.body.style.cursor = prev;
@@ -234,15 +256,26 @@ export default function Home() {
           if (!isPrincess) {
             playHarp();
             playRain();
+          } else {
+            playFart();
+
+            setTimeout(() => {
+              playPoop();
+            }, 750);
+            // playPoop();
           }
 
           setIsPrincess(!isPrincess);
         }}
         style={{
+          background: "#757575",
+          padding: "4px",
           cursor: isPrincess ? "none" : "default",
         }}
       >
-        {isPrincess ? "poor mode (noob)" : "princes mode (powerful)"}
+        {isPrincess
+          ? "⚠️ poor mode (noob) 💩"
+          : "💎💫princes mode (powerful)💖✨"}
       </button>
 
       <input
@@ -262,7 +295,7 @@ export default function Home() {
           if (isPrincess) {
             playSparkle();
             playTsHurtMyEars();
-            // playStar();
+            // playStar();l
           }
         }}
       />
@@ -323,6 +356,8 @@ export default function Home() {
             disabled={loading}
             style={{
               cursor: isPrincess ? "none" : "default",
+              background: "#757575",
+              padding: "4px",
             }}
           >
             {loading
@@ -336,7 +371,7 @@ export default function Home() {
             what should each compression quality be?
           </p>
           <div className={styles.bottombaritem}>
-            <p>{quality}</p>
+            <SlidingNumber value={parseFloat(quality)} />
             <input
               type="range"
               min="0"
@@ -351,7 +386,7 @@ export default function Home() {
             how many times should it be compressed?
           </p>
           <div className={styles.bottombaritem}>
-            <p>{loops}</p>
+            <SlidingNumber value={parseFloat(loops)} />
             <input
               type="range"
               min="0"
@@ -366,7 +401,7 @@ export default function Home() {
             subsample (0=keep all colors, 1=less colors, 2=least colors):{" "}
           </p>
           <div className={styles.bottombaritem}>
-            <p>{subsample}</p>
+            <SlidingNumber value={parseFloat(subsample)} />
             <input
               type="range"
               min="0"
@@ -391,7 +426,7 @@ export default function Home() {
 
           <p className={styles.bottombartext}>brightness</p>
           <div className={styles.bottombaritem}>
-            <p>{brightness}</p>
+            <SlidingNumber value={parseFloat(brightness)} />
             <input
               type="range"
               min="0"
@@ -404,7 +439,7 @@ export default function Home() {
 
           <p className={styles.bottombartext}>contrast</p>
           <div className={styles.bottombaritem}>
-            <p>{contrast}</p>
+            <SlidingNumber value={parseFloat(contrast)} />
             <input
               type="range"
               min="0"
@@ -433,7 +468,7 @@ export default function Home() {
             fully visible)
           </p>
           <div className={styles.bottombaritem}>
-            <p>{ghostpacify}</p>
+            <SlidingNumber value={parseFloat(ghostpacify)} />
             <input
               type="range"
               min="0"
@@ -448,7 +483,7 @@ export default function Home() {
             ghost shift (how much the ghost shifts, in pixels)
           </p>
           <div className={styles.bottombaritem}>
-            <p>{ghostshit}</p>
+            <SlidingNumber value={parseFloat(ghostshit)} />
             <input
               type="range"
               min="0"
@@ -463,7 +498,7 @@ export default function Home() {
             font (1-4, font style to use for the message):{" "}
           </p>
           <div className={styles.bottombaritem}>
-            <p>{font}</p>
+            <SlidingNumber value={parseFloat(font)} />
             <input
               type="range"
               min="1"
@@ -482,33 +517,69 @@ export default function Home() {
             <input
               type="text"
               value={message}
+              style={{
+                flex: "1",
+              }}
               onChange={(e) => setMessage(e.target.value)}
             />
           </div>
 
           <p className={styles.bottombartext}>EMOJI SEARCH</p>
           <div className={styles.bottombaritem}>
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <input
+                type="text"
+                value={searchTerm}
+                placeholder={"wilted-flower"}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <p>max 100 results to prevent lag</p>
+            </div>
 
             <div className={styles.emojiCtn}>
-              {searchResults.map((r) => (
-                <div key={r}>
-                  <Image
-                    src={`/emojis/${r}.png`}
-                    alt={""}
-                    className={styles.emojiImg}
-                    width={25}
-                    height={25}
-                    loading={"lazy"}
-                    decoding={"async"}
-                  />
-                  {r}
-                </div>
-              ))}
+              <AnimatePresence mode={"popLayout"}>
+                {searchResults.map((r) => (
+                  <motion.div
+                    key={r}
+                    initial={{
+                      opacity: 0,
+                    }}
+                    animate={{
+                      opacity: 1,
+                    }}
+                    exit={{
+                      opacity: 0,
+                    }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 350,
+                      damping: 40,
+                      opacity: {
+                        ease: "linear",
+                        duration: 0.2,
+                      },
+                    }}
+                    className={styles.emojiImgCtn}
+                    layout
+                  >
+                    <Image
+                      src={`/emojis/${r}.png`}
+                      alt={""}
+                      className={styles.emojiImg}
+                      width={25}
+                      height={25}
+                      loading={"lazy"}
+                      decoding={"async"}
+                    />
+                    {r}
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </div>
           </div>
         </div>
@@ -521,6 +592,8 @@ export default function Home() {
             disabled={loading}
             style={{
               cursor: isPrincess ? "none" : "default",
+              background: "#757575",
+              padding: "4px",
             }}
           >
             {loading

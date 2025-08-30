@@ -77,9 +77,13 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  /*background: red;*/
 
   gap: 16px;
+
+  /*min-width: 100%;*/
+  min-width: 300px;
 }
 
 .bottombartext {
@@ -95,6 +99,19 @@
 
   overflow: auto;
   /*overflow-x: hidden;*/
+}
+
+.emojiImgCtn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+
+  gap: 8px;
+
+  padding: 8px;
+
+  /*flex-wrap: wrap;*/
 }
 
 .emojiImg {
@@ -118,4 +135,18 @@
   border-radius: 4px;
 
   cursor: pointer;
+}
+
+.bottombaritem > div > input {
+  padding: 8px;
+
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.bottombaritem > input {
+  padding: 8px;
+
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }

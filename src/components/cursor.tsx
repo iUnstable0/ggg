@@ -20,7 +20,7 @@ export default function Cursor({
     const target = e.target;
     const tagName = target.tagName.toLowerCase();
 
-    if (["label", "button"].includes(tagName)) {
+    if (["label", "button", "input"].includes(tagName)) {
       setIsPointer(true);
     } else {
       setIsPointer(false);
