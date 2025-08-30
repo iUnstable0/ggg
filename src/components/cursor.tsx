@@ -16,7 +16,7 @@ export default function Cursor({
 }) {
   const [isPointer, setIsPointer] = useState(true);
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e: any) => {
     const target = e.target;
     const tagName = target.tagName.toLowerCase();
 
