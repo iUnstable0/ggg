@@ -1,0 +1,12 @@
+.wand {
+  width: 75px;
+  height: 175px;
+  object-fit: fill;
+
+  position: fixed;
+
+  overflow: hidden;
+  z-index: 100;
+
+  /*background: red;*/
+}

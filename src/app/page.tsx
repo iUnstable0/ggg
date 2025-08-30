@@ -5,12 +5,15 @@ import { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 
 import { DateTime } from "luxon";
+import { motion, AnimatePresence } from "motion/react";
 
 import Fuse from "fuse.js";
 import axios from "axios";
 import useSound from "use-sound";
 
 import { RgbaColorPicker } from "react-colorful";
+
+import Cursor from "@/components/cursor";
 
 import emojis from "./emojis.json";
 
@@ -23,6 +26,8 @@ export default function Home() {
   const [playRain] = useSound("/sounds/rain.wav");
   const [playDust] = useSound("/sounds/dust.wav");
   const [playStar] = useSound("/sounds/star.wav");
+  const [playSparkle] = useSound("/sounds/sparkle.wav");
+  const [playTsHurtMyEars] = useSound("/sounds/tshurtmyears.wav");
 
   const [file, setFile] = useState<File | null>(null);
   const [goatedImage, setGoatedImage] = useState<string | null>(null);
@@ -55,6 +60,11 @@ export default function Home() {
 
   const [isPrincess, setIsPrincess] = useState(false);
 
+  const [position, setPosition] = useState({
+    x: 0,
+    y: 0,
+  });
+
   const imageUrl = useMemo(() => {
     if (!file) return null;
     return URL.createObjectURL(file);
@@ -75,6 +85,35 @@ export default function Home() {
   }, [searchTerm]);
 
   useEffect(() => {
+    return () => {
+      if (imageUrl) URL.revokeObjectURL(imageUrl);
+    };
+  }, [imageUrl]);
+
+  useEffect(() => {
+    const onMove = (e: PointerEvent) => {
+      setPosition({ x: e.clientX + 2, y: e.clientY + 2 });
+    };
+
+    window.addEventListener("pointermove", onMove, { passive: true });
+
+    return () => window.removeEventListener("pointermove", onMove);
+  }, []);
+
+  // Hide the native cursor globally in princess mode
+  useEffect(() => {
+    if (isPrincess) {
+      const prev = document.body.style.cursor;
+
+      document.body.style.cursor = "none";
+
+      return () => {
+        document.body.style.cursor = prev;
+      };
+    }
+  }, [isPrincess]);
+
+  useEffect(() => {
     if (!endTime) {
       return;
     }
@@ -93,7 +132,7 @@ export default function Home() {
   }, [endTime]);
 
   const deleteGoat = async () => {
-    const goatName = goatedImage.split("/").pop();
+    const goatName = goatedImage?.split("/").pop();
 
     try {
       const res = await axios.post(
@@ -109,6 +148,8 @@ export default function Home() {
         "Error deleting old goat lol it will delete on its own anyway ",
       );
     }
+
+    setGoatedImage(null);
   };
 
   const previewGoat = async () => {
@@ -161,6 +202,11 @@ export default function Home() {
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/files/${encodeURIComponent(res.data.filename)}`,
       );
 
+      if (isPrincess) {
+        playStar();
+        playDust();
+      }
+
       setEndTime(DateTime.now().plus({ minutes: 5 }).toISO());
     } catch (error) {
       console.error("Error generating goated image:", error);
@@ -171,19 +217,32 @@ export default function Home() {
   };
 
   return (
-    <div className={styles.page}>
+    <div
+      className={styles.page}
+      style={{
+        cursor: isPrincess ? "none" : "default",
+      }}
+    >
+      {isPrincess && <Cursor position={position} />}
+
       <div className={styles.header}>
         <b>The Goodnight Goat Generator</b>
       </div>
 
       <button
         onClick={(e) => {
-          playHarp();
-          playRain();
+          if (!isPrincess) {
+            playHarp();
+            playRain();
+          }
+
           setIsPrincess(!isPrincess);
         }}
+        style={{
+          cursor: isPrincess ? "none" : "default",
+        }}
       >
-        princess mode (powerful)
+        {isPrincess ? "poor mode (noob)" : "princes mode (powerful)"}
       </button>
 
       <input
@@ -198,10 +257,23 @@ export default function Home() {
           if (!file) return;
 
           setFile(file);
+          deleteGoat();
+
+          if (isPrincess) {
+            playSparkle();
+            playTsHurtMyEars();
+            // playStar();
+          }
         }}
       />
-      <label htmlFor={"img"} className={styles.chooseFile}>
-        Click here to choose file
+      <label
+        htmlFor={"img"}
+        className={styles.chooseFile}
+        style={{
+          cursor: isPrincess ? "none" : "default",
+        }}
+      >
+        click here to choose file
       </label>
       {`file chosen: ${file?.name || "no file chosen"}`}
 
@@ -227,7 +299,9 @@ export default function Home() {
         <div className={styles.previewCtn}>
           {!goatedImage && (
             <div className={styles.noImage}>
-              press the preview button to preview the goated image
+              {loading
+                ? "loading. plz wait"
+                : "press the preview button to preview the goated image"}
             </div>
           )}
           {goatedImage && (
@@ -244,7 +318,13 @@ export default function Home() {
 
       {imageUrl && (
         <div className={styles.bottombar}>
-          <button onClick={previewGoat} disabled={loading}>
+          <button
+            onClick={previewGoat}
+            disabled={loading}
+            style={{
+              cursor: isPrincess ? "none" : "default",
+            }}
+          >
             {loading
               ? "Loading, please wait..."
               : "Click to preview goated image"}
@@ -436,7 +516,13 @@ export default function Home() {
 
       {imageUrl && (
         <div className={styles.bottombar}>
-          <button onClick={previewGoat} disabled={loading}>
+          <button
+            onClick={previewGoat}
+            disabled={loading}
+            style={{
+              cursor: isPrincess ? "none" : "default",
+            }}
+          >
             {loading
               ? "Loading, please wait..."
               : "Click to preview goated image"}
@@ -469,7 +555,9 @@ export default function Home() {
           <div className={styles.previewCtn}>
             {!goatedImage && (
               <div className={styles.noImage}>
-                press the preview button to preview the goated image
+                {loading
+                  ? "loading. plz wait"
+                  : "press the preview button to preview the goated image"}
               </div>
             )}
             {goatedImage && (
@@ -499,10 +587,17 @@ export default function Home() {
               if (!file) return;
 
               setFile(file);
+              deleteGoat();
             }}
           />
-          <label htmlFor={"img"} className={styles.chooseFile}>
-            Click here to choose file
+          <label
+            htmlFor={"img"}
+            className={styles.chooseFile}
+            style={{
+              cursor: isPrincess ? "none" : "default",
+            }}
+          >
+            click here to choose file
           </label>
           {`file chosen: ${file?.name || "no file chosen"}`}
         </>
