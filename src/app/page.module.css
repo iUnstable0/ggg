@@ -1,42 +1,51 @@
 .page {
-    padding: 20px;
+  padding: 20px;
 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
-    gap: 32px;
+  gap: 32px;
 
-    width: 100vw;
-    height: 100vh;
+  width: 100vw;
+  height: 100vh;
 }
 
 .header {
-    font-size: 24px;
+  font-size: 24px;
+}
+
+.previewGroup {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  gap: 32px;
 }
 
 .previewCtn {
-    /*background: blue;*/
+  /*background: blue;*/
 
-    outline: 2px solid #989898;
+  outline: 2px solid #989898;
 
-    width: 300px;
-    height: 300px;
+  width: 300px;
+  height: 300px;
 }
 
 .noImage {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    height: 100%;
+  height: 100%;
 
-    width: 100%;
+  width: 100%;
 }
 
 .image {
-    object-fit: contain;
-    width: 100%;
-    height: 100%;
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
 }
