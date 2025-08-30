@@ -221,7 +221,7 @@ export default function Home() {
       console.log(res.data);
 
       setGoatedImage(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/files/${encodeURIComponent(res.data.filename)}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/files/${res.data.filename}`,
       );
 
       if (isPrincess) {
