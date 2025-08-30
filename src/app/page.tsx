@@ -4,10 +4,11 @@ import { useState, useMemo, useEffect } from "react";
 
 import Image from "next/image";
 
+import { DateTime } from "luxon";
+
 import Fuse from "fuse.js";
 import axios from "axios";
-
-import { DateTime } from "luxon";
+import useSound from "use-sound";
 
 import { RgbaColorPicker } from "react-colorful";
 
@@ -18,6 +19,11 @@ import styles from "./page.module.css";
 const fuse = new Fuse(emojis, {});
 
 export default function Home() {
+  const [playHarp] = useSound("/sounds/harp.wav");
+  const [playRain] = useSound("/sounds/rain.wav");
+  const [playDust] = useSound("/sounds/dust.wav");
+  const [playStar] = useSound("/sounds/star.wav");
+
   const [file, setFile] = useState<File | null>(null);
   const [goatedImage, setGoatedImage] = useState<string | null>(null);
 
@@ -33,6 +39,13 @@ export default function Home() {
   const [font, setFont] = useState("1");
   const [message, setMessage] = useState("Hello, My Goat :red-heart:");
 
+  const [color, setColor] = useState({
+    r: 255,
+    g: 255,
+    b: 255,
+    a: 1,
+  });
+
   const [endTime, setEndTime] = useState<string | null>(null);
   const [timeRemaining, setTimeRemaining] = useState("5:00");
 
@@ -40,12 +53,7 @@ export default function Home() {
 
   const [loading, setLoading] = useState(false);
 
-  const [color, setColor] = useState({
-    r: 255,
-    g: 255,
-    b: 255,
-    a: 1,
-  });
+  const [isPrincess, setIsPrincess] = useState(false);
 
   const imageUrl = useMemo(() => {
     if (!file) return null;
@@ -167,6 +175,16 @@ export default function Home() {
       <div className={styles.header}>
         <b>The Goodnight Goat Generator</b>
       </div>
+
+      <button
+        onClick={(e) => {
+          playHarp();
+          playRain();
+          setIsPrincess(!isPrincess);
+        }}
+      >
+        princess mode (powerful)
+      </button>
 
       <input
         type={"file"}
