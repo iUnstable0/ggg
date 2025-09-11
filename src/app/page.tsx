@@ -7,6 +7,8 @@ import Image from "next/image";
 import { DateTime } from "luxon";
 import { motion, AnimatePresence } from "motion/react";
 
+import toast, { Toaster } from "react-hot-toast";
+
 import Fuse from "fuse.js";
 import axios from "axios";
 import useSound from "use-sound";
@@ -154,6 +156,11 @@ export default function Home() {
   }, [endTime]);
 
   const deleteGoat = async () => {
+    if (!goatedImage) {
+      console.log("no goat");
+      return;
+    }
+
     const goatName = goatedImage?.split("/").pop();
 
     try {
@@ -181,11 +188,12 @@ export default function Home() {
 
     setLoading(true);
 
-    if (goatedImage) {
-      // alert("overwrite");
+    // if (goatedImage) {
+    // alert("overwrite");
 
-      await deleteGoat();
-    }
+    // it alr does a check inside the function
+    await deleteGoat();
+    // }
 
     const formData = new FormData();
     formData.append("file", file);
@@ -245,6 +253,7 @@ export default function Home() {
         cursor: isPrincess ? "none" : "default",
       }}
     >
+      <Toaster />
       {isPrincess && <Cursor position={position} />}
 
       <div className={styles.header}>
@@ -520,6 +529,7 @@ export default function Home() {
               style={{
                 flex: "1",
               }}
+              placeholder={"Hello, My Goat :red-heart:"}
               onChange={(e) => setMessage(e.target.value)}
             />
           </div>
@@ -539,6 +549,7 @@ export default function Home() {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
               <p>max 100 results to prevent lag</p>
+              <p>click to copy the emoji name!</p>
             </div>
 
             <div className={styles.emojiCtn}>
@@ -563,6 +574,15 @@ export default function Home() {
                         ease: "linear",
                         duration: 0.2,
                       },
+                    }}
+                    onClick={(e) => {
+                      const txt = `:${r}:`;
+                      navigator.clipboard.writeText(txt);
+                      // toast.success("Copied to clipboard!", {
+                      //   id: "copyclipboard",
+                      // });
+                      console.log("i miss my friends bruh");
+                      toast.success("Copied to clipboard!");
                     }}
                     className={styles.emojiImgCtn}
                     layout

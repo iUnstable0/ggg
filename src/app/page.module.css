@@ -99,6 +99,8 @@
 
   overflow: auto;
   /*overflow-x: hidden;*/
+
+  cursor: pointer;
 }
 
 .emojiImgCtn {
