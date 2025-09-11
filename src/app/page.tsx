@@ -82,6 +82,8 @@ export default function Home() {
 
   const [loading, setLoading] = useState(false);
 
+  const [uploadPg, setUploadPg] = useState(0);
+
   const [isPrincess, setIsPrincess] = useState(false);
 
   const [position, setPosition] = useState({
@@ -223,6 +225,9 @@ export default function Home() {
           headers: {
             "Content-Type": "multipart/form-data",
           },
+          onUploadProgress: (pg) => {
+            setUploadPg(pg.progress);
+          },
         },
       );
 
@@ -342,7 +347,7 @@ export default function Home() {
           {!goatedImage && (
             <div className={styles.noImage}>
               {loading
-                ? "loading. plz wait"
+                ? `loading. plz wait. upload progress: ${Math.round(uploadPg * 100)}%`
                 : "press the preview button to preview the goated image"}
             </div>
           )}
