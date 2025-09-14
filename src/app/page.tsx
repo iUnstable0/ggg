@@ -91,9 +91,15 @@ export default function Home() {
     y: 0,
   });
 
-  const imageUrl = useMemo(() => {
+  const fileUrl = useMemo(() => {
     if (!file) return null;
     return URL.createObjectURL(file);
+  }, [file]);
+
+  const fileType = useMemo(() => {
+    if (!file) return null;
+    if (file.type.startsWith("image")) return "image";
+    if (file.type.startsWith("video")) return "video";
   }, [file]);
 
   const searchResults = useMemo(() => {
@@ -112,9 +118,9 @@ export default function Home() {
 
   useEffect(() => {
     return () => {
-      if (imageUrl) URL.revokeObjectURL(imageUrl);
+      if (fileUrl) URL.revokeObjectURL(fileUrl);
     };
-  }, [imageUrl]);
+  }, [fileUrl]);
 
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
@@ -181,6 +187,48 @@ export default function Home() {
     }
 
     setGoatedImage(null);
+  };
+
+  const videoValid = (file: File): Promise<boolean> => {
+    return new Promise((resolve) => {
+      const url = URL.createObjectURL(file);
+      const video = document.createElement("video");
+
+      video.preload = "metadata";
+      video.src = url;
+      video.onloadedmetadata = () => {
+        const duration = Number.isFinite(video.duration) ? video.duration : 0;
+        URL.revokeObjectURL(url);
+        resolve(duration > 10);
+      };
+      video.onerror = () => {
+        URL.revokeObjectURL(url);
+        resolve(false);
+      };
+    });
+  };
+
+  const onFileInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+
+    if (file.type.startsWith("video")) {
+      if (await videoValid(file)) {
+        toast.error("Video too long max 10 secs");
+
+        e.target.value = "";
+
+        return;
+      }
+    }
+
+    setFile(file);
+    deleteGoat();
+
+    if (isPrincess) {
+      playSparkle();
+      playTsHurtMyEars();
+    }
   };
 
   const previewGoat = async () => {
@@ -294,24 +342,11 @@ export default function Home() {
 
       <input
         type={"file"}
-        accept={"image/*"}
+        accept={"image/*,video/*"}
         id="img"
         className={styles.fileInput}
         multiple={false}
-        onInput={(e) => {
-          // alert("file");
-          const file = (e.target as HTMLInputElement).files?.[0];
-          if (!file) return;
-
-          setFile(file);
-          deleteGoat();
-
-          if (isPrincess) {
-            playSparkle();
-            playTsHurtMyEars();
-            // playStar();l
-          }
-        }}
+        onChange={onFileInput}
       />
       <label
         htmlFor={"img"}
@@ -326,20 +361,28 @@ export default function Home() {
 
       <div className={styles.previewGroup}>
         <div className={styles.previewCtn}>
-          {!imageUrl && (
+          {!fileUrl && (
             <div className={styles.noImage}>
               selected image will be shown here
             </div>
           )}
-          {imageUrl && (
-            <Image
-              src={imageUrl}
-              alt={"Image preview"}
-              width={100}
-              height={100}
-              className={styles.image}
-            />
-          )}
+          {fileUrl &&
+            (fileType == "image" ? (
+              <Image
+                src={fileUrl}
+                alt={"Image preview"}
+                width={100}
+                height={100}
+                className={styles.image}
+              />
+            ) : fileType == "video" ? (
+              <video width="320" height="240" controls preload="none">
+                <source src={fileUrl} type="video/mp4" />
+                Your browser does not support the video tag
+              </video>
+            ) : (
+              <p>Unknown error</p>
+            ))}
         </div>
         {"=>"}
 
@@ -348,7 +391,7 @@ export default function Home() {
             <div className={styles.noImage}>
               {loading
                 ? `loading. plz wait. upload progress: ${Math.round(uploadPg * 100)}%`
-                : "press the preview button to preview the goated image"}
+                : "press the preview button to preview the goated image/gif"}
             </div>
           )}
           {goatedImage && (
@@ -363,7 +406,7 @@ export default function Home() {
         </div>
       </div>
 
-      {imageUrl && (
+      {fileUrl && (
         <div className={styles.bottombar}>
           <button
             onClick={previewGoat}
@@ -376,7 +419,7 @@ export default function Home() {
           >
             {loading
               ? "Loading, please wait..."
-              : "Click to preview goated image"}
+              : "Click to preview goated image/gif"}
           </button>
           <p>All files expire in 5 minutes after generation</p>
           {endTime && <p>Expiry timer: {timeRemaining}</p>}
@@ -610,7 +653,7 @@ export default function Home() {
         </div>
       )}
 
-      {imageUrl && (
+      {fileUrl && (
         <div className={styles.bottombar}>
           <button
             onClick={previewGoat}
@@ -623,7 +666,7 @@ export default function Home() {
           >
             {loading
               ? "Loading, please wait..."
-              : "Click to preview goated image"}
+              : "Click to preview goated image/gif"}
           </button>
           <p>All files expire in 5 minutes after generation</p>
           {endTime && <p>Expiry timer: {timeRemaining}</p>}
@@ -633,14 +676,14 @@ export default function Home() {
       {file && (
         <div className={styles.previewGroup}>
           <div className={styles.previewCtn}>
-            {!imageUrl && (
+            {!fileUrl && (
               <div className={styles.noImage}>
                 selected image will be shown here
               </div>
             )}
-            {imageUrl && (
+            {fileUrl && (
               <Image
-                src={imageUrl}
+                src={fileUrl}
                 alt={"Image preview"}
                 width={100}
                 height={100}
@@ -655,7 +698,7 @@ export default function Home() {
               <div className={styles.noImage}>
                 {loading
                   ? "loading. plz wait"
-                  : "press the preview button to preview the goated image"}
+                  : "press the preview button to preview the goated image/gif"}
               </div>
             )}
             {goatedImage && (
@@ -675,18 +718,11 @@ export default function Home() {
         <>
           <input
             type={"file"}
-            accept={"image/*"}
+            accept={"image/*,video/*"}
             id="img"
             className={styles.fileInput}
             multiple={false}
-            onInput={(e) => {
-              // alert("file");
-              const file = (e.target as HTMLInputElement).files?.[0];
-              if (!file) return;
-
-              setFile(file);
-              deleteGoat();
-            }}
+            onChange={onFileInput}
           />
           <label
             htmlFor={"img"}
