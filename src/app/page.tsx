@@ -24,6 +24,75 @@ import { SlidingNumber } from "@/components/sliding-number";
 
 const fuse = new Fuse(emojis, {});
 
+function FilePreview({
+  show,
+  fileUrl,
+  fileType,
+  goatedImage,
+  loading,
+  uploadPg,
+}: {
+  show: boolean;
+  fileUrl: string | null;
+  fileType: string | null;
+  goatedImage: string | null;
+  loading: boolean;
+  uploadPg: number;
+}) {
+  return (
+    show && (
+      <div className={styles.previewGroup}>
+        <div className={styles.previewCtn}>
+          {!fileUrl && (
+            <div className={styles.noImage}>
+              selected image will be shown here
+            </div>
+          )}
+
+          {fileUrl &&
+            (fileType == "image" ? (
+              <Image
+                src={fileUrl}
+                alt={"Image preview"}
+                width={100}
+                height={100}
+                className={styles.image}
+              />
+            ) : fileType == "video" ? (
+              <video width="320" height="240" controls preload="none">
+                <source src={fileUrl} type="video/mp4" />
+                Your browser does not support the video tag
+              </video>
+            ) : (
+              <p>Unknown error</p>
+            ))}
+        </div>
+
+        {"=>"}
+
+        <div className={styles.previewCtn}>
+          {!goatedImage && (
+            <div className={styles.noImage}>
+              {loading
+                ? `loading. plz wait ${Math.round(uploadPg * 100)}%`
+                : "press the preview button to preview the goated image/gif"}
+            </div>
+          )}
+          {goatedImage && (
+            <Image
+              src={goatedImage}
+              alt={"Goat preview"}
+              width={100}
+              height={100}
+              className={styles.image}
+            />
+          )}
+        </div>
+      </div>
+    )
+  );
+}
+
 export default function Home() {
   const [playHarp] = useSound("/sounds/harp.wav", {
     interrupt: true,
@@ -78,13 +147,13 @@ export default function Home() {
   const [endTime, setEndTime] = useState<string | null>(null);
   const [timeRemaining, setTimeRemaining] = useState("5:00");
 
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const [uploadPg, setUploadPg] = useState(0);
+  const [uploadPg, setUploadPg] = useState<number>(0);
 
-  const [isPrincess, setIsPrincess] = useState(false);
+  const [isPrincess, setIsPrincess] = useState<boolean>(false);
 
   const [position, setPosition] = useState({
     x: 0,
@@ -98,8 +167,11 @@ export default function Home() {
 
   const fileType = useMemo(() => {
     if (!file) return null;
+
     if (file.type.startsWith("image")) return "image";
     if (file.type.startsWith("video")) return "video";
+
+    return null;
   }, [file]);
 
   const searchResults = useMemo(() => {
@@ -231,20 +303,11 @@ export default function Home() {
     }
   };
 
-  const previewGoat = async () => {
-    if (loading) return;
+  const previewGoatVideo = async () => {
+    alert("preview video coming soon!");
+  };
 
-    if (!file) return;
-
-    setLoading(true);
-
-    // if (goatedImage) {
-    // alert("overwrite");
-
-    // it alr does a check inside the function
-    await deleteGoat();
-    // }
-
+  const previewGoatImage = async () => {
     const formData = new FormData();
     formData.append("file", file);
 
@@ -274,7 +337,7 @@ export default function Home() {
             "Content-Type": "multipart/form-data",
           },
           onUploadProgress: (pg) => {
-            setUploadPg(pg.progress);
+            setUploadPg(pg.progress || 0);
           },
         },
       );
@@ -299,6 +362,25 @@ export default function Home() {
     setLoading(false);
   };
 
+  const handlePreview = async () => {
+    if (loading) return;
+
+    if (!file) return;
+
+    setLoading(true);
+
+    // if (goatedImage) {
+    // alert("overwrite");
+
+    // it alr does a check inside the function
+    await deleteGoat();
+
+    if (fileType === "image") return previewGoatImage();
+    if (fileType === "video") return previewGoatVideo();
+
+    toast.error("how did you get here?");
+  };
+
   return (
     <div
       className={styles.page}
@@ -314,7 +396,7 @@ export default function Home() {
       </div>
 
       <button
-        onClick={(e) => {
+        onClick={() => {
           if (!isPrincess) {
             playHarp();
             playRain();
@@ -359,57 +441,69 @@ export default function Home() {
       </label>
       {`file chosen: ${file?.name || "no file chosen"}`}
 
-      <div className={styles.previewGroup}>
-        <div className={styles.previewCtn}>
-          {!fileUrl && (
-            <div className={styles.noImage}>
-              selected image will be shown here
-            </div>
-          )}
-          {fileUrl &&
-            (fileType == "image" ? (
-              <Image
-                src={fileUrl}
-                alt={"Image preview"}
-                width={100}
-                height={100}
-                className={styles.image}
-              />
-            ) : fileType == "video" ? (
-              <video width="320" height="240" controls preload="none">
-                <source src={fileUrl} type="video/mp4" />
-                Your browser does not support the video tag
-              </video>
-            ) : (
-              <p>Unknown error</p>
-            ))}
-        </div>
-        {"=>"}
+      <FilePreview
+        show={true}
+        fileUrl={fileUrl}
+        fileType={fileType}
+        goatedImage={goatedImage}
+        loading={loading}
+        uploadPg={uploadPg}
+      />
 
-        <div className={styles.previewCtn}>
-          {!goatedImage && (
-            <div className={styles.noImage}>
-              {loading
-                ? `loading. plz wait. upload progress: ${Math.round(uploadPg * 100)}%`
-                : "press the preview button to preview the goated image/gif"}
-            </div>
-          )}
-          {goatedImage && (
-            <Image
-              src={goatedImage}
-              alt={"Goat preview"}
-              width={100}
-              height={100}
-              className={styles.image}
-            />
-          )}
-        </div>
-      </div>
+      {/*<div className={styles.previewGroup}>*/}
+      {/*  <div className={styles.previewCtn}>*/}
+      {/*    {!fileUrl && (*/}
+      {/*      <div className={styles.noImage}>*/}
+      {/*        selected image will be shown here*/}
+      {/*      </div>*/}
+      {/*    )}*/}
+
+      {/*    <FilePreview fileUrl={fileUrl} fileType={fileType} />*/}
+
+      {/*{fileUrl &&*/}
+      {/*  (fileType == "image" ? (*/}
+      {/*    <Image*/}
+      {/*      src={fileUrl}*/}
+      {/*      alt={"Image preview"}*/}
+      {/*      width={100}*/}
+      {/*      height={100}*/}
+      {/*      className={styles.image}*/}
+      {/*    />*/}
+      {/*  ) : fileType == "video" ? (*/}
+      {/*    <video width="320" height="240" controls preload="none">*/}
+      {/*      <source src={fileUrl} type="video/mp4" />*/}
+      {/*      Your browser does not support the video tag*/}
+      {/*    </video>*/}
+      {/*  ) : (*/}
+      {/*    <p>Unknown error</p>*/}
+      {/*  ))}*/}
+      {/*  </div>*/}
+      {/*  {"=>"}*/}
+
+      {/*  <div className={styles.previewCtn}>*/}
+      {/*    {!goatedImage && (*/}
+      {/*      <div className={styles.noImage}>*/}
+      {/*        {loading*/}
+      {/*          ? `loading. plz wait. upload progress: ${Math.round(uploadPg * 100)}%`*/}
+      {/*          : "press the preview button to preview the goated image/gif"}*/}
+      {/*      </div>*/}
+      {/*    )}*/}
+      {/*    {goatedImage && (*/}
+      {/*      <Image*/}
+      {/*        src={goatedImage}*/}
+      {/*        alt={"Goat preview"}*/}
+      {/*        width={100}*/}
+      {/*        height={100}*/}
+      {/*        className={styles.image}*/}
+      {/*      />*/}
+      {/*    )}*/}
+      {/*  </div>*/}
+      {/*</div>*/}
 
       {fileUrl && (
         <div className={styles.bottombar}>
           <button
-            onClick={previewGoat}
+            onClick={handlePreview}
             disabled={loading}
             style={{
               cursor: isPrincess ? "none" : "default",
@@ -424,132 +518,138 @@ export default function Home() {
           <p>All files expire in 5 minutes after generation</p>
           {endTime && <p>Expiry timer: {timeRemaining}</p>}
 
-          <p className={styles.bottombartext}>
-            what should each compression quality be?
-          </p>
-          <div className={styles.bottombaritem}>
-            <SlidingNumber value={parseFloat(quality)} />
-            <input
-              type="range"
-              min="0"
-              max="100"
-              step="1"
-              defaultValue="20"
-              onChange={(e) => setQuality(e.target.value)}
-            />
-          </div>
+          {fileType === "image" && (
+            <>
+              <p className={styles.bottombartext}>
+                what should each compression quality be?
+              </p>
+              <div className={styles.bottombaritem}>
+                <SlidingNumber value={parseFloat(quality)} />
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="1"
+                  defaultValue="20"
+                  onChange={(e) => setQuality(e.target.value)}
+                />
+              </div>
 
-          <p className={styles.bottombartext}>
-            how many times should it be compressed?
-          </p>
-          <div className={styles.bottombaritem}>
-            <SlidingNumber value={parseFloat(loops)} />
-            <input
-              type="range"
-              min="0"
-              max="10"
-              step="1"
-              defaultValue="3"
-              onChange={(e) => setLoops(e.target.value)}
-            />
-          </div>
+              <p className={styles.bottombartext}>
+                how many times should it be compressed?
+              </p>
+              <div className={styles.bottombaritem}>
+                <SlidingNumber value={parseFloat(loops)} />
+                <input
+                  type="range"
+                  min="0"
+                  max="10"
+                  step="1"
+                  defaultValue="3"
+                  onChange={(e) => setLoops(e.target.value)}
+                />
+              </div>
 
-          <p className={styles.bottombartext}>
-            subsample (0=keep all colors, 1=less colors, 2=least colors):{" "}
-          </p>
-          <div className={styles.bottombaritem}>
-            <SlidingNumber value={parseFloat(subsample)} />
-            <input
-              type="range"
-              min="0"
-              max="2"
-              step="1"
-              defaultValue="2"
-              onChange={(e) => setSubsample(e.target.value)}
-            />{" "}
-          </div>
+              <p className={styles.bottombartext}>
+                subsample (0=keep all colors, 1=less colors, 2=least
+                colors):{" "}
+              </p>
+              <div className={styles.bottombaritem}>
+                <SlidingNumber value={parseFloat(subsample)} />
+                <input
+                  type="range"
+                  min="0"
+                  max="2"
+                  step="1"
+                  defaultValue="2"
+                  onChange={(e) => setSubsample(e.target.value)}
+                />{" "}
+              </div>
 
-          <p className={styles.bottombartext}>
-            posterize bits (off = keep all colors, on = less colors):{" "}
-          </p>
-          <div className={styles.bottombaritem}>
-            {posterizebits ? "on" : "off"}
-            <input
-              type="checkbox"
-              checked={posterizebits}
-              onChange={(e) => setPosterizebits(e.target.checked)}
-            />
-          </div>
+              <p className={styles.bottombartext}>
+                posterize bits (off = keep all colors, on = less colors):{" "}
+              </p>
+              <div className={styles.bottombaritem}>
+                {posterizebits ? "on" : "off"}
+                <input
+                  type="checkbox"
+                  checked={posterizebits}
+                  onChange={(e) => setPosterizebits(e.target.checked)}
+                />
+              </div>
 
-          <p className={styles.bottombartext}>brightness</p>
-          <div className={styles.bottombaritem}>
-            <SlidingNumber value={parseFloat(brightness)} />
-            <input
-              type="range"
-              min="0"
-              max="2"
-              step="0.1"
-              defaultValue="1"
-              onChange={(e) => setBrightness(e.target.value)}
-            />
-          </div>
+              <p className={styles.bottombartext}>brightness</p>
+              <div className={styles.bottombaritem}>
+                <SlidingNumber value={parseFloat(brightness)} />
+                <input
+                  type="range"
+                  min="0"
+                  max="2"
+                  step="0.1"
+                  defaultValue="1"
+                  onChange={(e) => setBrightness(e.target.value)}
+                />
+              </div>
 
-          <p className={styles.bottombartext}>contrast</p>
-          <div className={styles.bottombaritem}>
-            <SlidingNumber value={parseFloat(contrast)} />
-            <input
-              type="range"
-              min="0"
-              max="2"
-              step="0.1"
-              defaultValue="1"
-              onChange={(e) => setContrast(e.target.value)}
-            />
-          </div>
+              <p className={styles.bottombartext}>contrast</p>
+              <div className={styles.bottombaritem}>
+                <SlidingNumber value={parseFloat(contrast)} />
+                <input
+                  type="range"
+                  min="0"
+                  max="2"
+                  step="0.1"
+                  defaultValue="1"
+                  onChange={(e) => setContrast(e.target.value)}
+                />
+              </div>
 
-          <p className={styles.bottombartext}>
-            ghost (adds ghosting effect, like old VHS tapes (clone image, paste
-            on top with random shift to a direction and opacity set to 0.5))
-          </p>
-          <div className={styles.bottombaritem}>
-            {ghost ? "on" : "off"}
-            <input
-              type="checkbox"
-              checked={ghost}
-              onChange={(e) => setGhost(e.target.checked)}
-            />
-          </div>
+              <p className={styles.bottombartext}>
+                ghost (adds ghosting effect, like old VHS tapes (clone image,
+                paste on top with random shift to a direction and opacity set to
+                0.5))
+              </p>
+              <div className={styles.bottombaritem}>
+                {ghost ? "on" : "off"}
+                <input
+                  type="checkbox"
+                  checked={ghost}
+                  onChange={(e) => setGhost(e.target.checked)}
+                />
+              </div>
 
-          <p className={styles.bottombartext}>
-            ghost opacity (how much opacity the ghost has, 0 = invisible, 1 =
-            fully visible)
-          </p>
-          <div className={styles.bottombaritem}>
-            <SlidingNumber value={parseFloat(ghostpacify)} />
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.1"
-              defaultValue="0.5"
-              onChange={(e) => setGhostpacify(e.target.value)}
-            />
-          </div>
+              <p className={styles.bottombartext}>
+                ghost opacity (how much opacity the ghost has, 0 = invisible, 1
+                = fully visible)
+              </p>
+              <div className={styles.bottombaritem}>
+                <SlidingNumber value={parseFloat(ghostpacify)} />
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.1"
+                  defaultValue="0.5"
+                  onChange={(e) => setGhostpacify(e.target.value)}
+                />
+              </div>
 
-          <p className={styles.bottombartext}>
-            ghost shift (how much the ghost shifts, in pixels)
-          </p>
-          <div className={styles.bottombaritem}>
-            <SlidingNumber value={parseFloat(ghostshit)} />
-            <input
-              type="range"
-              min="0"
-              max="50"
-              step="1"
-              defaultValue="10"
-              onChange={(e) => setGhostshit(e.target.value)}
-            />
-          </div>
+              <p className={styles.bottombartext}>
+                ghost shift (how much the ghost shifts, in pixels)
+              </p>
+              <div className={styles.bottombaritem}>
+                <SlidingNumber value={parseFloat(ghostshit)} />
+                <input
+                  type="range"
+                  min="0"
+                  max="50"
+                  step="1"
+                  defaultValue="10"
+                  onChange={(e) => setGhostshit(e.target.value)}
+                />
+              </div>
+            </>
+          )}
 
           <p className={styles.bottombartext}>
             font (1-4, font style to use for the message):{" "}
@@ -623,7 +723,7 @@ export default function Home() {
                         duration: 0.2,
                       },
                     }}
-                    onClick={(e) => {
+                    onClick={() => {
                       const txt = `:${r}:`;
                       navigator.clipboard.writeText(txt);
                       // toast.success("Copied to clipboard!", {
@@ -656,7 +756,7 @@ export default function Home() {
       {fileUrl && (
         <div className={styles.bottombar}>
           <button
-            onClick={previewGoat}
+            onClick={handlePreview}
             disabled={loading}
             style={{
               cursor: isPrincess ? "none" : "default",
@@ -673,46 +773,58 @@ export default function Home() {
         </div>
       )}
 
-      {file && (
-        <div className={styles.previewGroup}>
-          <div className={styles.previewCtn}>
-            {!fileUrl && (
-              <div className={styles.noImage}>
-                selected image will be shown here
-              </div>
-            )}
-            {fileUrl && (
-              <Image
-                src={fileUrl}
-                alt={"Image preview"}
-                width={100}
-                height={100}
-                className={styles.image}
-              />
-            )}
-          </div>
-          {"=>"}
+      <FilePreview
+        show={!!file}
+        fileUrl={fileUrl}
+        fileType={fileType}
+        goatedImage={goatedImage}
+        loading={loading}
+        uploadPg={uploadPg}
+      />
 
-          <div className={styles.previewCtn}>
-            {!goatedImage && (
-              <div className={styles.noImage}>
-                {loading
-                  ? "loading. plz wait"
-                  : "press the preview button to preview the goated image/gif"}
-              </div>
-            )}
-            {goatedImage && (
-              <Image
-                src={goatedImage}
-                alt={"Goat preview"}
-                width={100}
-                height={100}
-                className={styles.image}
-              />
-            )}
-          </div>
-        </div>
-      )}
+      {/*{file && (*/}
+      {/*  <div className={styles.previewGroup}>*/}
+      {/*    <div className={styles.previewCtn}>*/}
+      {/*      {!fileUrl && (*/}
+      {/*        <div className={styles.noImage}>*/}
+      {/*          selected image will be shown here*/}
+      {/*        </div>*/}
+      {/*      )}*/}
+
+      {/*      /!*<FilePreview fileUrl={fileUrl} fileType={fileType} />*!/*/}
+
+      {/*      /!*{fileUrl && (*!/*/}
+      {/*      /!*  <Image*!/*/}
+      {/*      /!*    src={fileUrl}*!/*/}
+      {/*      /!*    alt={"Image preview"}*!/*/}
+      {/*      /!*    width={100}*!/*/}
+      {/*      /!*    height={100}*!/*/}
+      {/*      /!*    className={styles.image}*!/*/}
+      {/*      /!*  />*!/*/}
+      {/*      /!*)}*!/*/}
+      {/*    </div>*/}
+      {/*    {"=>"}*/}
+
+      {/*    <div className={styles.previewCtn}>*/}
+      {/*      {!goatedImage && (*/}
+      {/*        <div className={styles.noImage}>*/}
+      {/*          {loading*/}
+      {/*            ? "loading. plz wait"*/}
+      {/*            : "press the preview button to preview the goated image/gif"}*/}
+      {/*        </div>*/}
+      {/*      )}*/}
+      {/*      {goatedImage && (*/}
+      {/*        <Image*/}
+      {/*          src={goatedImage}*/}
+      {/*          alt={"Goat preview"}*/}
+      {/*          width={100}*/}
+      {/*          height={100}*/}
+      {/*          className={styles.image}*/}
+      {/*        />*/}
+      {/*      )}*/}
+      {/*    </div>*/}
+      {/*  </div>*/}
+      {/*)}*/}
 
       {file && (
         <>
