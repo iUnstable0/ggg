@@ -152,3 +152,54 @@
   border: 1px solid #ccc;
   border-radius: 4px;
 }
+
+.princessConfirmation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  z-index: 99;
+
+  background: rgba(0, 0, 0, 0.5);
+
+  .princessCtn {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    padding: 20px;
+    border-radius: 8px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 16px;
+
+    min-width: 300px;
+
+    background: #ff8ef8;
+
+    font-family: "Comic Sans MS";
+    font-size: 26px;
+
+    .princessTitle {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+
+      h1 {
+        margin: 0 12px;
+      }
+    }
+
+    .sigBox {
+      background: #ce72c8;
+    }
+  }
+}

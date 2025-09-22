@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 
 import Image from "next/image";
 
 import { DateTime } from "luxon";
 import { motion, AnimatePresence } from "motion/react";
+
+import { Stage, Layer, Line, Text } from "react-konva";
 
 import toast, { Toaster } from "react-hot-toast";
 
@@ -198,6 +200,10 @@ export default function Home() {
     interrupt: true,
   });
 
+  const [tool, setTool] = useState("pen");
+  const [lines, setLines] = useState<any>([]);
+  const isDrawing = useRef(false);
+
   const [file, setFile] = useState<File | null>(null);
   const [goatedImage, setGoatedImage] = useState<string | null>(null);
 
@@ -232,11 +238,37 @@ export default function Home() {
   const [uploadPg, setUploadPg] = useState<number>(0);
 
   const [isPrincess, setIsPrincess] = useState<boolean>(false);
+  const [princessConfirmation, setPrincessConfirmation] =
+    useState<boolean>(false);
 
   const [position, setPosition] = useState({
     x: 0,
     y: 0,
   });
+
+  const handleMouseDown = (e) => {
+    isDrawing.current = true;
+    const pos = e.target.getStage().getPointerPosition();
+    setLines([...lines, { tool, points: [pos.x, pos.y] }]);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDrawing.current) {
+      return;
+    }
+    const stage = e.target.getStage();
+    const point = stage.getPointerPosition();
+    let lastLine = lines[lines.length - 1];
+
+    lastLine.points = lastLine.points.concat([point.x, point.y]);
+
+    lines.splice(lines.length - 1, 1, lastLine);
+    setLines(lines.concat());
+  };
+
+  const handleMouseUp = () => {
+    isDrawing.current = false;
+  };
 
   const fileUrl = useMemo(() => {
     if (!file) return null;
@@ -500,6 +532,73 @@ export default function Home() {
       <Toaster />
       {isPrincess && <Cursor position={position} />}
 
+      {princessConfirmation && (
+        <div className={styles.princessConfirmation}>
+          <div className={styles.princessCtn}>
+            <div className={styles.princessTitle}>
+              <Image
+                src={"/emojis/dizzy.png"}
+                alt={"royal emoji"}
+                width={30}
+                height={30}
+              />
+              <Image
+                src={"/emojis/gem-stone.png"}
+                alt={"royal emoji"}
+                width={30}
+                height={30}
+              />
+              <h1>Royal Confirmation Required</h1>
+              <Image
+                src={"/emojis/sparkles.png"}
+                alt={"royal emoji"}
+                width={30}
+                height={30}
+              />
+              <Image
+                src={"/emojis/sparkling-heart.png"}
+                alt={"royal emoji"}
+                width={30}
+                height={30}
+              />
+            </div>
+            Your signature:
+            <div className={styles.sigBox}>
+              <Stage
+                width={250}
+                height={75}
+                onMouseDown={handleMouseDown}
+                onMousemove={handleMouseMove}
+                onMouseup={handleMouseUp}
+                onTouchStart={handleMouseDown}
+                onTouchMove={handleMouseMove}
+                onTouchEnd={handleMouseUp}
+              >
+                <Layer>
+                  {/*<Text text="Just start drawing" x={5} y={30} />*/}
+                  {lines.map((line, i) => (
+                    <Line
+                      key={i}
+                      points={line.points}
+                      stroke="#df4b26"
+                      strokeWidth={5}
+                      tension={0.5}
+                      lineCap="round"
+                      lineJoin="round"
+                      globalCompositeOperation={
+                        line.tool === "eraser"
+                          ? "destination-out"
+                          : "source-over"
+                      }
+                    />
+                  ))}
+                </Layer>
+              </Stage>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className={styles.header}>
         <b>The Goodnight Goat Generator</b>
       </div>
@@ -509,16 +608,10 @@ export default function Home() {
           if (!isPrincess) {
             playHarp();
             playRain();
+            setIsPrincess(!isPrincess);
           } else {
-            playFart();
-
-            setTimeout(() => {
-              playPoop();
-            }, 750);
-            // playPoop();
+            setPrincessConfirmation(true);
           }
-
-          setIsPrincess(!isPrincess);
         }}
         style={{
           background: "#757575",
