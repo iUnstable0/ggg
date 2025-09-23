@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 
 import Image from "next/image";
 
@@ -199,6 +199,9 @@ export default function Home() {
   const [playPoop] = useSound("/sounds/poop.wav", {
     interrupt: true,
   });
+  const [playMuhehe] = useSound("/sounds/muhehe.wav", {
+    interrupt: true,
+  });
 
   const [tool, setTool] = useState("pen");
   const [lines, setLines] = useState<any>([]);
@@ -241,9 +244,17 @@ export default function Home() {
   const [princessConfirmation, setPrincessConfirmation] =
     useState<boolean>(false);
 
+  const [princessPlaying, setPrincessPlaying] = useState<boolean>(false);
+
   const [position, setPosition] = useState({
     x: 0,
     y: 0,
+  });
+
+  const [playPrincess, { stop: stopPrincess }] = useSound("/sounds/poop.wav", {
+    interrupt: true,
+    onplay: () => setPrincessPlaying(true),
+    onend: () => setPrincessPlaying(false),
   });
 
   const handleMouseDown = (e) => {
@@ -548,7 +559,7 @@ export default function Home() {
                 width={30}
                 height={30}
               />
-              <h1>Royal Confirmation Required</h1>
+              <h1>Royal Confirmation</h1>
               <Image
                 src={"/emojis/sparkles.png"}
                 alt={"royal emoji"}
@@ -562,7 +573,61 @@ export default function Home() {
                 height={30}
               />
             </div>
-            Your signature:
+            Are you sure you want to renounce your title and go back to TRIGGER
+            WARNING:
+            <span className={styles.confirmtxt}>
+              <Image
+                src={"/emojis/pile-of-poo.png"}
+                alt={"royal emoji"}
+                width={30}
+                height={30}
+                className={styles.confirmicon}
+              />
+              <Image
+                src={"/emojis/pile-of-poo.png"}
+                alt={"royal emoji"}
+                width={30}
+                height={30}
+                className={styles.confirmicon}
+              />
+              poor mode (noob)
+              <Image
+                src={"/emojis/pile-of-poo.png"}
+                alt={"royal emoji"}
+                width={30}
+                height={30}
+                className={styles.confirmicon}
+              />
+              <Image
+                src={"/emojis/pile-of-poo.png"}
+                alt={"royal emoji"}
+                width={30}
+                height={30}
+                className={styles.confirmicon}
+              />
+            </span>
+            You will also lose these royal benefits
+            <div className={styles.benefitsctn}>
+              <ul>
+                <li>💎💫 early premium royal bug fixes</li>
+                <li>💎💫 exclusive magical princess wand mouse cursor</li>
+                <li>
+                  💎💫 royal sound effects to soothe you as you use the website
+                  (princess energy 1111 manifest 443 + 732 KHz healing frequency
+                  powerful - use with caution and i swear one time at my old job
+                  someone did not use with caution and everyone lost their minds
+                  over it like genuinely i cannot believe grown adults act this
+                  way it was literally the dumbest scenario imaginable because
+                  apparently dave from compliance decided to microwave fish in
+                  the office kitchen during quarterly reviews and then somehow
+                  claire tripped on the power cord of the projector while
+                  gagging at the smell and spilled coffee all over the server
+                  logs and everyone acted like it was the meltdown of the
+                  century even though it was just decaf.
+                </li>
+              </ul>
+            </div>
+            <span>Your signature:</span>
             <div className={styles.sigBox}>
               <Stage
                 width={250}
@@ -595,6 +660,38 @@ export default function Home() {
                 </Layer>
               </Stage>
             </div>
+            <div
+              style={{
+                display: "flex",
+                gap: "32px",
+              }}
+            >
+              <button
+                onClick={() => {
+                  setLines([]);
+                  setPrincessConfirmation(false);
+                  setIsPrincess(false);
+                  stopPrincess();
+
+                  playFart();
+
+                  setTimeout(() => {
+                    playPoop();
+                  }, 750);
+                }}
+              >
+                Confirm
+              </button>
+              <button
+                onClick={() => {
+                  setLines([]);
+                  playMuhehe();
+                  setPrincessConfirmation(false);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -608,9 +705,11 @@ export default function Home() {
           if (!isPrincess) {
             playHarp();
             playRain();
-            setIsPrincess(!isPrincess);
+            setIsPrincess(true);
+            playPrincess();
           } else {
             setPrincessConfirmation(true);
+            playFart();
           }
         }}
         style={{

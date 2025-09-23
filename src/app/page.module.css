@@ -198,6 +198,26 @@
       }
     }
 
+    .confirmtxt {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .confirmicon {
+        width: 32px;
+        height: 32px;
+
+        margin-right: 8px;
+      }
+    }
+
+    .benefitsctn {
+      max-height: 200px;
+      background-color: #ce72c8;
+      overflow: auto;
+      font-size: 20px;
+    }
+
     .sigBox {
       background: #ce72c8;
     }
