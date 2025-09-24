@@ -13,6 +13,8 @@ import { Stage, Layer, Line, Text } from "react-konva";
 
 import toast, { Toaster } from "react-hot-toast";
 
+import { Spoiler } from "spoiled";
+
 import Fuse from "fuse.js";
 import axios from "axios";
 import useSound from "use-sound";
@@ -174,34 +176,34 @@ function FilePreview({
 }
 
 export default function Home() {
-  const [playHarp] = useSound("/sounds/harp.wav", {
+  const [playHarp] = useSound("/sounds/harp.mp3", {
     interrupt: true,
   });
-  const [playRain] = useSound("/sounds/rain.wav", {
+  const [playRain] = useSound("/sounds/rain.mp3", {
     interrupt: true,
   });
-  const [playDust] = useSound("/sounds/dust.wav", {
+  const [playDust] = useSound("/sounds/dust.mp3", {
     interrupt: true,
   });
-  const [playStar] = useSound("/sounds/star.wav", {
+  const [playStar] = useSound("/sounds/star.mp3", {
     interrupt: true,
   });
-  const [playSparkle] = useSound("/sounds/sparkle.wav", {
+  const [playSparkle] = useSound("/sounds/sparkle.mp3", {
     interrupt: true,
   });
-  const [playTsHurtMyEars] = useSound("/sounds/tshurtmyears.wav", {
+  const [playTsHurtMyEars] = useSound("/sounds/tshurtmyears.mp3", {
     interrupt: true,
   });
-  const [playAww] = useSound("/sounds/aww.wav", {
+  const [playAww] = useSound("/sounds/aww.mp3", {
     interrupt: true,
   });
-  const [playFart] = useSound("/sounds/fart.wav", {
+  const [playFart] = useSound("/sounds/fart.mp3", {
     interrupt: true,
   });
-  const [playPoop] = useSound("/sounds/poop.wav", {
+  const [playPoop] = useSound("/sounds/poop.mp3", {
     interrupt: true,
   });
-  const [playMuhehe] = useSound("/sounds/muhehe.wav", {
+  const [playMuhehe] = useSound("/sounds/muhehe.mp3", {
     interrupt: true,
   });
 
@@ -261,28 +263,64 @@ export default function Home() {
     {
       interrupt: true,
       onplay: () => setPrincessPlaying(0),
-      onend: () => setPrincessPlaying(-1),
+      onend: () => setMusicSelection(1),
     },
   );
 
-  const [playWhirl, { stop: stopWhirl }] = useSound("/sounds/whirl.wav", {
+  const [playWhirl, { stop: stopWhirl }] = useSound("/sounds/whirl.mp3", {
     interrupt: true,
     onplay: () => setPrincessPlaying(1),
-    onend: () => setPrincessPlaying(-1),
+    onend: () => setMusicSelection(2),
+  });
+
+  const [playRoyal1, { stop: stopRoyal1 }] = useSound("/sounds/royal1.mp3", {
+    interrupt: true,
+    onplay: () => setPrincessPlaying(2),
+    onend: () => setMusicSelection(3),
+  });
+
+  const [playRoyal2, { stop: stopRoyal2 }] = useSound("/sounds/royal2.mp3", {
+    interrupt: true,
+    onplay: () => setPrincessPlaying(3),
+    onend: () => setMusicSelection(4),
+  });
+
+  const [playRoyal3, { stop: stopRoyal3 }] = useSound("/sounds/royal3.mp3", {
+    interrupt: true,
+    onplay: () => setPrincessPlaying(4),
+    onend: () => setMusicSelection(5),
   });
 
   const [playChristmas, { stop: stopChristmas }] = useSound(
     "/sounds/christmas.mp3",
     {
       interrupt: true,
-      onplay: () => setPrincessPlaying(2),
-      onend: () => setPrincessPlaying(-1),
+      onplay: () => setPrincessPlaying(5),
+      onend: () => {
+        setMusicSelection(0);
+        // setPrincessPlaying(-1);
+      },
     },
   );
+
+  // const [playSad1, { stop: stopSad1 }] = useSound("/sounds/sad1.mp3", {
+  //   interrupt: true,
+  //   onplay: () => setPrincessPlaying(2),
+  //   onend: () => setPrincessPlaying(-1),
+  // });
+
+  // const [playSad2, { stop: stopSad2 }] = useSound("/sounds/sad2.mp3", {
+  //   interrupt: true,
+  //   onplay: () => setPrincessPlaying(2),
+  //   onend: () => setPrincessPlaying(-1),
+  // });
 
   const queue = [
     [playPrincess, stopPrincess],
     [playWhirl, stopWhirl],
+    [playRoyal1, stopRoyal1],
+    [playRoyal2, stopRoyal2],
+    [playRoyal3, stopRoyal3],
     [playChristmas, stopChristmas],
   ];
 
@@ -647,37 +685,39 @@ export default function Home() {
             </div>
             Are you sure you want to renounce your title and go back to TRIGGER
             WARNING:
-            <span className={styles.confirmtxt}>
-              <Image
-                src={"/emojis/pile-of-poo.png"}
-                alt={"royal emoji"}
-                width={30}
-                height={30}
-                className={styles.confirmicon}
-              />
-              <Image
-                src={"/emojis/pile-of-poo.png"}
-                alt={"royal emoji"}
-                width={30}
-                height={30}
-                className={styles.confirmicon}
-              />
-              poor mode (noob)
-              <Image
-                src={"/emojis/pile-of-poo.png"}
-                alt={"royal emoji"}
-                width={30}
-                height={30}
-                className={styles.confirmicon}
-              />
-              <Image
-                src={"/emojis/pile-of-poo.png"}
-                alt={"royal emoji"}
-                width={30}
-                height={30}
-                className={styles.confirmicon}
-              />
-            </span>
+            <Spoiler tagName={"div"} theme="dark" density={0.5}>
+              <span className={styles.confirmtxt}>
+                <Image
+                  src={"/emojis/pile-of-poo.png"}
+                  alt={"royal emoji"}
+                  width={30}
+                  height={30}
+                  className={styles.confirmicon}
+                />
+                <Image
+                  src={"/emojis/pile-of-poo.png"}
+                  alt={"royal emoji"}
+                  width={30}
+                  height={30}
+                  className={styles.confirmicon}
+                />
+                poor mode (noob)
+                <Image
+                  src={"/emojis/pile-of-poo.png"}
+                  alt={"royal emoji"}
+                  width={30}
+                  height={30}
+                  className={styles.confirmicon}
+                />
+                <Image
+                  src={"/emojis/pile-of-poo.png"}
+                  alt={"royal emoji"}
+                  width={30}
+                  height={30}
+                  className={styles.confirmicon}
+                />
+              </span>
+            </Spoiler>
             You will also lose these royal benefits
             <div className={styles.benefitsctn}>
               <ul>
@@ -717,7 +757,7 @@ export default function Home() {
                     <Line
                       key={i}
                       points={line.points}
-                      stroke="#df4b26"
+                      stroke="#ff4646"
                       strokeWidth={5}
                       tension={0.5}
                       lineCap="round"
