@@ -153,6 +153,31 @@
   border-radius: 4px;
 }
 
+.princessmusicselection {
+  background: #ff8ef8;
+  padding: 8px;
+
+  border: 1px solid #ccc;
+  border-radius: 4px;
+
+  position: fixed;
+  bottom: 20px;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .selection {
+    margin-left: 8px;
+    padding: 12px;
+    background: #ce72c8;
+  }
+
+  .selected {
+    border: 2px solid #a1589c;
+  }
+}
+
 .princessConfirmation {
   position: fixed;
   top: 0;

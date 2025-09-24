@@ -7,6 +7,8 @@ import Image from "next/image";
 import { DateTime } from "luxon";
 import { motion, AnimatePresence } from "motion/react";
 
+import clsx from "clsx";
+
 import { Stage, Layer, Line, Text } from "react-konva";
 
 import toast, { Toaster } from "react-hot-toast";
@@ -231,6 +233,8 @@ export default function Home() {
     a: 1,
   });
 
+  const [musicSelection, setMusicSelection] = useState<number>(0);
+
   const [endTime, setEndTime] = useState<string | null>(null);
   const [timeRemaining, setTimeRemaining] = useState("5:00");
 
@@ -244,18 +248,43 @@ export default function Home() {
   const [princessConfirmation, setPrincessConfirmation] =
     useState<boolean>(false);
 
-  const [princessPlaying, setPrincessPlaying] = useState<boolean>(false);
+  const [princessPlaying, setPrincessPlaying] = useState<number>(-1);
+  const [firstPrincess, setFirstPrincess] = useState<boolean>(true);
 
   const [position, setPosition] = useState({
     x: 0,
     y: 0,
   });
 
-  const [playPrincess, { stop: stopPrincess }] = useSound("/sounds/poop.wav", {
+  const [playPrincess, { stop: stopPrincess }] = useSound(
+    "/sounds/princess.mp3",
+    {
+      interrupt: true,
+      onplay: () => setPrincessPlaying(0),
+      onend: () => setPrincessPlaying(-1),
+    },
+  );
+
+  const [playWhirl, { stop: stopWhirl }] = useSound("/sounds/whirl.wav", {
     interrupt: true,
-    onplay: () => setPrincessPlaying(true),
-    onend: () => setPrincessPlaying(false),
+    onplay: () => setPrincessPlaying(1),
+    onend: () => setPrincessPlaying(-1),
   });
+
+  const [playChristmas, { stop: stopChristmas }] = useSound(
+    "/sounds/christmas.mp3",
+    {
+      interrupt: true,
+      onplay: () => setPrincessPlaying(2),
+      onend: () => setPrincessPlaying(-1),
+    },
+  );
+
+  const queue = [
+    [playPrincess, stopPrincess],
+    [playWhirl, stopWhirl],
+    [playChristmas, stopChristmas],
+  ];
 
   const handleMouseDown = (e) => {
     isDrawing.current = true;
@@ -315,6 +344,29 @@ export default function Home() {
       if (fileUrl) URL.revokeObjectURL(fileUrl);
     };
   }, [fileUrl]);
+
+  useEffect(() => {
+    const [play, stop] = queue[musicSelection];
+
+    // if music not playing
+    if (princessPlaying === -1) {
+      if (isPrincess) {
+        play();
+      }
+      // 	if music palying
+    } else {
+      if (!isPrincess) {
+        stop();
+        setPrincessPlaying(-1);
+      }
+
+      if (princessPlaying !== musicSelection) {
+        queue[princessPlaying][1]();
+        // setPrincessPlaying(musicSelection);
+        play();
+      }
+    }
+  }, [princessPlaying, isPrincess, musicSelection]);
 
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
@@ -543,6 +595,26 @@ export default function Home() {
       <Toaster />
       {isPrincess && <Cursor position={position} />}
 
+      {isPrincess && (
+        <div className={styles.princessmusicselection}>
+          Royal FM 443 + 732 KHz
+          {queue.map((song, idx) => (
+            <button
+              key={idx}
+              className={clsx(
+                styles.selection,
+                musicSelection === idx && styles.selected,
+              )}
+              onClick={(e) => {
+                setMusicSelection(idx);
+              }}
+            >
+              {idx}
+            </button>
+          ))}
+        </div>
+      )}
+
       {princessConfirmation && (
         <div className={styles.princessConfirmation}>
           <div className={styles.princessCtn}>
@@ -668,10 +740,12 @@ export default function Home() {
             >
               <button
                 onClick={() => {
+                  if (lines.length === 0) {
+                    return toast.error("YOU MUST SIGN");
+                  }
                   setLines([]);
                   setPrincessConfirmation(false);
                   setIsPrincess(false);
-                  stopPrincess();
 
                   playFart();
 
@@ -706,10 +780,11 @@ export default function Home() {
             playHarp();
             playRain();
             setIsPrincess(true);
-            playPrincess();
+            // playPrincess();
           } else {
             setPrincessConfirmation(true);
-            playFart();
+            playRain();
+            playSparkle();
           }
         }}
         style={{
