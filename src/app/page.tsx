@@ -329,13 +329,13 @@ export default function Home() {
     [playChristmas, stopChristmas],
   ];
 
-  const handleMouseDown = (e) => {
+  const handleMouseDown = (e: any) => {
     isDrawing.current = true;
     const pos = e.target.getStage().getPointerPosition();
     setLines([...lines, { tool, points: [pos.x, pos.y] }]);
   };
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e: any) => {
     if (!isDrawing.current) {
       return;
     }
@@ -555,7 +555,7 @@ export default function Home() {
     setLoading(false);
   };
 
-  const previewGoatImage = async (formData) => {
+  const previewGoatImage = async (formData: FormData) => {
     try {
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/upload`,
@@ -628,26 +628,51 @@ export default function Home() {
     toast.error("how did you get here?");
   };
 
-  const snowflake1 = useMemo(() => {
-    let snow = document.createElement("img");
-    snow.src = "/cherry1.png";
-    return snow;
+  const [snowflakes, setSnowflakes] = useState<HTMLImageElement[] | null>(null);
+
+  useEffect(() => {
+    // guard for safety
+    if (typeof window === "undefined" || typeof document === "undefined")
+      return;
+
+    const make = (src: string) => {
+      const img = document.createElement("img");
+      img.src = src;
+      return img;
+    };
+
+    setSnowflakes([
+      make("/cherry1.png"),
+      make("/cherry2.png"),
+      make("/cherry3.png"),
+      make("/cherry4.png"),
+    ]);
   }, []);
-  const snowflake2 = useMemo(() => {
-    let snow = document.createElement("img");
-    snow.src = "/cherry2.png";
-    return snow;
-  }, []);
-  const snowflake3 = useMemo(() => {
-    let snow = document.createElement("img");
-    snow.src = "/cherry3.png";
-    return snow;
-  }, []);
-  const snowflake4 = useMemo(() => {
-    let snow = document.createElement("img");
-    snow.src = "/cherry4.png";
-    return snow;
-  }, []);
+
+  // const snowflake1 = useMemo(() => {
+  //   if (!document) return;
+  //   let snow = document.createElement("img");
+  //   snow.src = "/cherry1.png";
+  //   return snow;
+  // }, []);
+  // const snowflake2 = useMemo(() => {
+  //   if (!document) return;
+  //   let snow = document.createElement("img");
+  //   snow.src = "/cherry2.png";
+  //   return snow;
+  // }, []);
+  // const snowflake3 = useMemo(() => {
+  //   if (!document) return;
+  //   let snow = document.createElement("img");
+  //   snow.src = "/cherry3.png";
+  //   return snow;
+  // }, []);
+  // const snowflake4 = useMemo(() => {
+  //   if (!document) return;
+  //   let snow = document.createElement("img");
+  //   snow.src = "/cherry4.png";
+  //   return snow;
+  // }, []);
 
   return (
     <div
@@ -656,10 +681,10 @@ export default function Home() {
         cursor: isPrincess ? "none" : "default",
       }}
     >
-      {isPrincess && (
+      {isPrincess && snowflakes && (
         <div className={styles.snowDiv}>
           <Snowfall
-            images={[snowflake1]}
+            images={[snowflakes[0]]}
             snowflakeCount={20}
             radius={[12, 26]}
             speed={[0.4, 1.2]}
@@ -674,7 +699,7 @@ export default function Home() {
             }}
           />
           <Snowfall
-            images={[snowflake2]}
+            images={[snowflakes[1]]}
             snowflakeCount={20}
             radius={[12, 26]}
             speed={[0.4, 1.2]}
@@ -689,7 +714,7 @@ export default function Home() {
             }}
           />
           <Snowfall
-            images={[snowflake3]}
+            images={[snowflakes[2]]}
             snowflakeCount={20}
             radius={[12, 26]}
             speed={[0.4, 1.2]}
@@ -704,7 +729,7 @@ export default function Home() {
             }}
           />
           <Snowfall
-            images={[snowflake4]}
+            images={[snowflakes[3]]}
             snowflakeCount={20}
             radius={[12, 26]}
             speed={[0.4, 1.2]}
@@ -852,7 +877,7 @@ export default function Home() {
               >
                 <Layer>
                   {/*<Text text="Just start drawing" x={5} y={30} />*/}
-                  {lines.map((line, i) => (
+                  {lines.map((line: any, i: any) => (
                     <Line
                       key={i}
                       points={line.points}
@@ -946,7 +971,7 @@ export default function Home() {
       <FileSelection
         onFileInput={onFileInput}
         isPrincess={isPrincess}
-        file={file}
+        file={file!}
       />
 
       <FilePreview
