@@ -9,6 +9,8 @@ import { motion, AnimatePresence } from "motion/react";
 
 import clsx from "clsx";
 
+import Snowfall from "react-snowfall";
+
 import { Stage, Layer, Line, Text } from "react-konva";
 
 import toast, { Toaster } from "react-hot-toast";
@@ -71,13 +73,16 @@ function FileSelection({
   isPrincess,
   file,
 }: {
-  onFileInput: (e) => Promise<void>;
+  onFileInput: (e: any) => Promise<void>;
   isPrincess: boolean;
   file: File;
 }) {
   return (
     <>
       <input
+        style={{
+          cursor: isPrincess ? "none" : "default",
+        }}
         type={"file"}
         accept={"image/*,video/*"}
         id="img"
@@ -623,6 +628,27 @@ export default function Home() {
     toast.error("how did you get here?");
   };
 
+  const snowflake1 = useMemo(() => {
+    let snow = document.createElement("img");
+    snow.src = "/cherry1.png";
+    return snow;
+  }, []);
+  const snowflake2 = useMemo(() => {
+    let snow = document.createElement("img");
+    snow.src = "/cherry2.png";
+    return snow;
+  }, []);
+  const snowflake3 = useMemo(() => {
+    let snow = document.createElement("img");
+    snow.src = "/cherry3.png";
+    return snow;
+  }, []);
+  const snowflake4 = useMemo(() => {
+    let snow = document.createElement("img");
+    snow.src = "/cherry4.png";
+    return snow;
+  }, []);
+
   return (
     <div
       className={styles.page}
@@ -630,6 +656,71 @@ export default function Home() {
         cursor: isPrincess ? "none" : "default",
       }}
     >
+      {isPrincess && (
+        <div className={styles.snowDiv}>
+          <Snowfall
+            images={[snowflake1]}
+            snowflakeCount={20}
+            radius={[12, 26]}
+            speed={[0.4, 1.2]}
+            wind={[-0.4, 0.4]}
+            // rotationSpeed={[0.002, 0.01]}
+            style={{
+              opacity: 0.5,
+              position: "fixed",
+              inset: 0,
+              pointerEvents: "none",
+              zIndex: 9999,
+            }}
+          />
+          <Snowfall
+            images={[snowflake2]}
+            snowflakeCount={20}
+            radius={[12, 26]}
+            speed={[0.4, 1.2]}
+            wind={[-0.4, 0.4]}
+            // rotationSpeed={[0.002, 0.01]}
+            style={{
+              opacity: 0.6,
+              position: "fixed",
+              inset: 0,
+              pointerEvents: "none",
+              zIndex: 9999,
+            }}
+          />
+          <Snowfall
+            images={[snowflake3]}
+            snowflakeCount={20}
+            radius={[12, 26]}
+            speed={[0.4, 1.2]}
+            wind={[-0.4, 0.4]}
+            // rotationSpeed={[0.002, 0.01]}
+            style={{
+              opacity: 0.7,
+              position: "fixed",
+              inset: 0,
+              pointerEvents: "none",
+              zIndex: 9999,
+            }}
+          />
+          <Snowfall
+            images={[snowflake4]}
+            snowflakeCount={20}
+            radius={[12, 26]}
+            speed={[0.4, 1.2]}
+            wind={[-0.4, 0.4]}
+            // rotationSpeed={[0.002, 0.01]}
+            style={{
+              opacity: 0.8,
+              position: "fixed",
+              inset: 0,
+              pointerEvents: "none",
+              zIndex: 9999,
+            }}
+          />
+        </div>
+      )}
+
       <Toaster />
       {isPrincess && <Cursor position={position} />}
 
@@ -638,6 +729,9 @@ export default function Home() {
           Royal FM 443 + 732 KHz
           {queue.map((song, idx) => (
             <button
+              style={{
+                cursor: isPrincess ? "none" : "default",
+              }}
               key={idx}
               className={clsx(
                 styles.selection,
@@ -740,7 +834,12 @@ export default function Home() {
               </ul>
             </div>
             <span>Your signature:</span>
-            <div className={styles.sigBox}>
+            <div
+              className={styles.sigBox}
+              style={{
+                cursor: isPrincess ? "none" : "default",
+              }}
+            >
               <Stage
                 width={250}
                 height={75}
@@ -779,6 +878,9 @@ export default function Home() {
               }}
             >
               <button
+                style={{
+                  cursor: isPrincess ? "none" : "default",
+                }}
                 onClick={() => {
                   if (lines.length === 0) {
                     return toast.error("YOU MUST SIGN");
@@ -797,6 +899,9 @@ export default function Home() {
                 Confirm
               </button>
               <button
+                style={{
+                  cursor: isPrincess ? "none" : "default",
+                }}
                 onClick={() => {
                   setLines([]);
                   playMuhehe();
@@ -871,6 +976,9 @@ export default function Home() {
               <div className={styles.bottombaritem}>
                 <SlidingNumber value={parseFloat(fps)} />
                 <input
+                  style={{
+                    cursor: isPrincess ? "none" : "default",
+                  }}
                   type="range"
                   min="5"
                   max="15"
@@ -888,6 +996,9 @@ export default function Home() {
           <div className={styles.bottombaritem}>
             <SlidingNumber value={parseFloat(quality)} />
             <input
+              style={{
+                cursor: isPrincess ? "none" : "default",
+              }}
               type="range"
               min="0"
               max="100"
@@ -903,6 +1014,9 @@ export default function Home() {
           <div className={styles.bottombaritem}>
             <SlidingNumber value={parseFloat(loops)} />
             <input
+              style={{
+                cursor: isPrincess ? "none" : "default",
+              }}
               type="range"
               min="0"
               max="10"
@@ -918,6 +1032,9 @@ export default function Home() {
           <div className={styles.bottombaritem}>
             <SlidingNumber value={parseFloat(subsample)} />
             <input
+              style={{
+                cursor: isPrincess ? "none" : "default",
+              }}
               type="range"
               min="0"
               max="2"
@@ -933,6 +1050,9 @@ export default function Home() {
           <div className={styles.bottombaritem}>
             {posterizebits ? "on" : "off"}
             <input
+              style={{
+                cursor: isPrincess ? "none" : "default",
+              }}
               type="checkbox"
               checked={posterizebits}
               onChange={(e) => setPosterizebits(e.target.checked)}
@@ -943,6 +1063,9 @@ export default function Home() {
           <div className={styles.bottombaritem}>
             <SlidingNumber value={parseFloat(brightness)} />
             <input
+              style={{
+                cursor: isPrincess ? "none" : "default",
+              }}
               type="range"
               min="0"
               max="2"
@@ -956,6 +1079,9 @@ export default function Home() {
           <div className={styles.bottombaritem}>
             <SlidingNumber value={parseFloat(contrast)} />
             <input
+              style={{
+                cursor: isPrincess ? "none" : "default",
+              }}
               type="range"
               min="0"
               max="2"
@@ -972,6 +1098,9 @@ export default function Home() {
           <div className={styles.bottombaritem}>
             {ghost ? "on" : "off"}
             <input
+              style={{
+                cursor: isPrincess ? "none" : "default",
+              }}
               type="checkbox"
               checked={ghost}
               onChange={(e) => setGhost(e.target.checked)}
@@ -985,6 +1114,9 @@ export default function Home() {
           <div className={styles.bottombaritem}>
             <SlidingNumber value={parseFloat(ghostpacify)} />
             <input
+              style={{
+                cursor: isPrincess ? "none" : "default",
+              }}
               type="range"
               min="0"
               max="1"
@@ -1000,6 +1132,9 @@ export default function Home() {
           <div className={styles.bottombaritem}>
             <SlidingNumber value={parseFloat(ghostshit)} />
             <input
+              style={{
+                cursor: isPrincess ? "none" : "default",
+              }}
               type="range"
               min="0"
               max="50"
@@ -1015,6 +1150,9 @@ export default function Home() {
           <div className={styles.bottombaritem}>
             <SlidingNumber value={parseFloat(font)} />
             <input
+              style={{
+                cursor: isPrincess ? "none" : "default",
+              }}
               type="range"
               min="1"
               max="4"
@@ -1034,6 +1172,7 @@ export default function Home() {
               value={message}
               style={{
                 flex: "1",
+                cursor: isPrincess ? "none" : "default",
               }}
               placeholder={"Hello, My Goat :red-heart:"}
               onChange={(e) => setMessage(e.target.value)}
@@ -1049,6 +1188,9 @@ export default function Home() {
               }}
             >
               <input
+                style={{
+                  cursor: isPrincess ? "none" : "default",
+                }}
                 type="text"
                 value={searchTerm}
                 placeholder={"wilted-flower"}
@@ -1061,7 +1203,7 @@ export default function Home() {
             <div className={styles.emojiCtn}>
               <AnimatePresence mode={"popLayout"}>
                 {searchResults.map((r) => (
-                  <motion.div
+                  <motion.button
                     key={r}
                     initial={{
                       opacity: 0,
@@ -1080,6 +1222,9 @@ export default function Home() {
                         ease: "linear",
                         duration: 0.2,
                       },
+                    }}
+                    style={{
+                      cursor: isPrincess ? "none" : "default",
                     }}
                     onClick={() => {
                       const txt = `:${r}:`;
@@ -1103,7 +1248,7 @@ export default function Home() {
                       decoding={"async"}
                     />
                     {r}
-                  </motion.div>
+                  </motion.button>
                 ))}
               </AnimatePresence>
             </div>
