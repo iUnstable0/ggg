@@ -103,6 +103,7 @@ function FileSelection({
     </>
   );
 }
+
 function FilePreview({
   show,
   fileUrl,
@@ -110,6 +111,7 @@ function FilePreview({
   goatedImage,
   loading,
   uploadPg,
+  isPrincess,
 }: {
   show: boolean;
   fileUrl: string | null;
@@ -117,7 +119,43 @@ function FilePreview({
   goatedImage: string | null;
   loading: boolean;
   uploadPg: number;
+  isPrincess: boolean;
 }) {
+  const handleDownload = async () => {
+    if (!goatedImage) {
+      toast.error("No image to download.");
+      return;
+    }
+
+    try {
+      toast.loading("Preparing download...", { id: "download-toast" });
+
+      const response = await fetch(goatedImage);
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.statusText}`);
+      }
+      const blob = await response.blob();
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+
+      const filename = goatedImage.split("/").pop() || "goated-image";
+      link.setAttribute("download", filename);
+
+      document.body.appendChild(link);
+      link.click();
+
+      link.parentNode?.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast.success("Download started!", { id: "download-toast" });
+    } catch (error) {
+      console.error("Download error:", error);
+      toast.error("Failed to download the image.", { id: "download-toast" });
+    }
+  };
+
   return (
     show && (
       <div className={styles.previewGroup}>
@@ -166,13 +204,32 @@ function FilePreview({
             </div>
           )}
           {goatedImage && (
-            <Image
-              src={goatedImage}
-              alt={"Goat preview"}
-              width={100}
-              height={100}
-              className={styles.image}
-            />
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "10px",
+              }}
+            >
+              <Image
+                src={goatedImage}
+                alt={"Goat preview"}
+                width={100}
+                height={100}
+                className={styles.image}
+              />
+              <button
+                onClick={handleDownload}
+                style={{
+                  cursor: isPrincess ? "none" : "default",
+                  background: "#757575",
+                  padding: "4px",
+                }}
+              >
+                Download Original File
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -396,7 +453,7 @@ export default function Home() {
       if (isPrincess) {
         play();
       }
-      // 	if music palying
+      //  if music palying
     } else {
       if (!isPrincess) {
         stop();
@@ -981,6 +1038,7 @@ export default function Home() {
         goatedImage={goatedImage}
         loading={loading}
         uploadPg={uploadPg}
+        isPrincess={isPrincess}
       />
 
       {fileUrl && (
@@ -1300,6 +1358,7 @@ export default function Home() {
         goatedImage={goatedImage}
         loading={loading}
         uploadPg={uploadPg}
+        isPrincess={isPrincess}
       />
 
       {file && (
