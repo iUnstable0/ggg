@@ -822,14 +822,21 @@ export default function Home() {
               },
             }}
           >
-            <div className={styles.titleGoat}>
-              <BlurText
-                text="The Goodnight Goat Lore"
-                delay={100}
-                animateBy="letters"
-                className="text-4xl font-bold text-center max-w-4xl"
-              />
-            </div>
+            {lorePos === -1 && (
+              <div className={styles.titleGoat}>
+                <BlurText
+                  text="The Goodnight Goat Lore"
+                  delay={75}
+                  animateBy="letters"
+                  className="text-4xl font-bold text-center max-w-4xl"
+                  onAnimationComplete={() => {
+                    setTimeout(() => {
+                      setLorePos(1);
+                    }, 1000);
+                  }}
+                />
+              </div>
+            )}
 
             {/*{lorePos < 14 && (*/}
             {/*  <button*/}
@@ -842,47 +849,62 @@ export default function Home() {
             {/*  </button>*/}
             {/*)}*/}
 
-            {lorePos > 0 && (
-              <div className={styles.loreCtn}>
-                {lorePos > 1 && (
-                  <button
-                    onClick={() => {
-                      setLorePos(lorePos - 1);
-                    }}
-                  >
-                    {"<"} Previous
-                  </button>
-                )}
-                {lorePos > 0 && lorePos < 15 && (
-                  <Image
-                    src={`/lore/goodnightgoatlore_${lorePos}.png`}
-                    alt={"lore"}
-                    width={400}
-                    height={400}
-                    className={styles.loreImg}
-                  />
-                )}
-                {lorePos < 14 && (
-                  <button
-                    onClick={() => {
-                      setLorePos(lorePos + 1);
-                    }}
-                  >
-                    Next {">"}
-                  </button>
-                )}
-                {lorePos == 14 && (
-                  <button
-                    onClick={() => {
-                      setPrincessLore(false);
-                      setIsPrincess(true);
-                    }}
-                  >
-                    End of story click to exit
-                  </button>
-                )}
-              </div>
-            )}
+            <AnimatePresence>
+              {lorePos > 0 && (
+                <motion.div
+                  className={styles.loreCtn}
+                  initial={{ opacity: 0, transform: "scale(0.95)" }}
+                  animate={{ opacity: 1, transform: "scale(1)" }}
+                  exit={{ opacity: 0, transform: "scale(0.95)" }}
+                  transition={{
+                    type: "spring",
+                    damping: 25,
+                    stiffness: 120,
+                    opacity: {
+                      duration: 0.2,
+                    },
+                  }}
+                >
+                  {lorePos > 1 && (
+                    <button
+                      onClick={() => {
+                        setLorePos(lorePos - 1);
+                      }}
+                    >
+                      {"<"} Previous
+                    </button>
+                  )}
+                  {lorePos > 0 && lorePos < 15 && (
+                    <Image
+                      src={`/lore/goodnightgoatlore_${lorePos}.png`}
+                      alt={"lore"}
+                      width={400}
+                      height={400}
+                      className={styles.loreImg}
+                    />
+                  )}
+                  {lorePos < 14 && (
+                    <button
+                      onClick={() => {
+                        setLorePos(lorePos + 1);
+                      }}
+                    >
+                      Next {">"}
+                    </button>
+                  )}
+                  {lorePos == 14 && (
+                    <button
+                      onClick={() => {
+                        setPrincessLore(false);
+                        setIsPrincess(true);
+                      }}
+                    >
+                      End of story click to exit
+                    </button>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>
