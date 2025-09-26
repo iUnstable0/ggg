@@ -29,6 +29,7 @@ import emojis from "./emojis.json";
 
 import styles from "./page.module.css";
 import { SlidingNumber } from "@/components/sliding-number";
+import BlurText from "@/components/blur-text";
 
 const fuse = new Fuse(emojis, {});
 
@@ -314,6 +315,8 @@ export default function Home() {
 
   const [princessPlaying, setPrincessPlaying] = useState<number>(-1);
   const [firstPrincess, setFirstPrincess] = useState<boolean>(true);
+  const [princessLore, setPrincessLore] = useState<boolean>(false);
+  const [lorePos, setLorePos] = useState<number>(-1);
 
   const [position, setPosition] = useState({
     x: 0,
@@ -803,6 +806,87 @@ export default function Home() {
         </div>
       )}
 
+      <AnimatePresence>
+        {princessLore && (
+          <motion.div
+            className={styles.lore}
+            initial={{ opacity: 0, transform: "scale(0.95)" }}
+            animate={{ opacity: 1, transform: "scale(1)" }}
+            exit={{ opacity: 0, transform: "scale(0.95)" }}
+            transition={{
+              type: "spring",
+              damping: 25,
+              stiffness: 120,
+              opacity: {
+                duration: 0.2,
+              },
+            }}
+          >
+            <div className={styles.titleGoat}>
+              <BlurText
+                text="The Goodnight Goat Lore"
+                delay={100}
+                animateBy="letters"
+                className="text-4xl font-bold text-center max-w-4xl"
+              />
+            </div>
+
+            {/*{lorePos < 14 && (*/}
+            {/*  <button*/}
+            {/*    onClick={() => {*/}
+            {/*      setPrincessLore(false);*/}
+            {/*      setIsPrincess(true);*/}
+            {/*    }}*/}
+            {/*  >*/}
+            {/*    Skip story*/}
+            {/*  </button>*/}
+            {/*)}*/}
+
+            {lorePos > 0 && (
+              <div className={styles.loreCtn}>
+                {lorePos > 1 && (
+                  <button
+                    onClick={() => {
+                      setLorePos(lorePos - 1);
+                    }}
+                  >
+                    {"<"} Previous
+                  </button>
+                )}
+                {lorePos > 0 && lorePos < 15 && (
+                  <Image
+                    src={`/lore/goodnightgoatlore_${lorePos}.png`}
+                    alt={"lore"}
+                    width={400}
+                    height={400}
+                    className={styles.loreImg}
+                  />
+                )}
+                {lorePos < 14 && (
+                  <button
+                    onClick={() => {
+                      setLorePos(lorePos + 1);
+                    }}
+                  >
+                    Next {">"}
+                  </button>
+                )}
+                {lorePos == 14 && (
+                  <button
+                    onClick={() => {
+                      setPrincessLore(false);
+                      setIsPrincess(true);
+                    }}
+                  >
+                    End of story click to exit
+                  </button>
+                )}
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <Toaster />
       {isPrincess && <Cursor position={position} />}
 
@@ -1006,7 +1090,13 @@ export default function Home() {
           if (!isPrincess) {
             playHarp();
             playRain();
-            setIsPrincess(true);
+
+            if (firstPrincess) {
+              setFirstPrincess(false);
+              setPrincessLore(true);
+            } else {
+              setIsPrincess(true);
+            }
             // playPrincess();
           } else {
             setPrincessConfirmation(true);
