@@ -368,17 +368,18 @@ export default function Home() {
     },
   );
 
-  // const [playSad1, { stop: stopSad1 }] = useSound("/sounds/sad1.mp3", {
-  //   interrupt: true,
-  //   onplay: () => setPrincessPlaying(2),
-  //   onend: () => setPrincessPlaying(-1),
-  // });
+  const [playBack, { stop: stopBack }] = useSound("/sounds/lore_back.mp3", {
+    interrupt: true,
+  });
 
-  // const [playSad2, { stop: stopSad2 }] = useSound("/sounds/sad2.mp3", {
-  //   interrupt: true,
-  //   onplay: () => setPrincessPlaying(2),
-  //   onend: () => setPrincessPlaying(-1),
-  // });
+  const [playNext, { stop: stopNext }] = useSound("/sounds/lore_next.mp3", {
+    interrupt: true,
+  });
+
+  const [playPrincessModeActivation, { stop: stopPrincessModeActivation }] =
+    useSound("/sounds/princessmodeactivated.mp3", {
+      interrupt: true,
+    });
 
   const queue = [
     [playPrincess, stopPrincess],
@@ -484,6 +485,8 @@ export default function Home() {
   // Hide the native cursor globally in princess mode
   useEffect(() => {
     if (isPrincess) {
+      playPrincessModeActivation();
+
       const prev = document.body.style.cursor;
 
       document.body.style.cursor = "none !important";
@@ -504,7 +507,11 @@ export default function Home() {
     const interval = setInterval(() => {
       const diff = endDate.diff(DateTime.now(), ["minutes", "seconds"]);
 
-      setTimeRemaining(`${diff.minutes}:${Math.round(diff.seconds)}`);
+      if (diff.minutes <= 0 && diff.seconds <= 0) {
+        setTimeRemaining(`0:00 (EXPIRED)`);
+      } else {
+        setTimeRemaining(`${diff.minutes}:${Math.round(diff.seconds)}`);
+      }
     }, 500);
 
     return () => {
@@ -868,6 +875,7 @@ export default function Home() {
                   {lorePos > 1 && (
                     <button
                       onClick={() => {
+                        playBack();
                         setLorePos(lorePos - 1);
                       }}
                     >
@@ -886,6 +894,7 @@ export default function Home() {
                   {lorePos < 14 && (
                     <button
                       onClick={() => {
+                        playNext();
                         setLorePos(lorePos + 1);
                       }}
                     >
