@@ -26,11 +26,12 @@ import { RgbaColorPicker } from "react-colorful";
 import Cursor from "@/components/cursor";
 
 import emojis from "./emojis.json";
+import Sparkle from "@/components/sparkles";
 
 import styles from "./page.module.css";
 import { SlidingNumber } from "@/components/sliding-number";
 import BlurText from "@/components/blur-text";
-
+import { GlowEffect } from "@/components/glow-effect";
 const fuse = new Fuse(emojis, {});
 
 const VID_LIMIT = 20;
@@ -269,6 +270,17 @@ export default function Home() {
   const [playMuhehe] = useSound("/sounds/muhehe.mp3", {
     interrupt: true,
   });
+
+  type T_SparkleData = {
+    id: number;
+    top: string;
+    left: string;
+    duration: number;
+    delay: number;
+  }[];
+
+  const imgCtnRef = useRef(null);
+  const [sparkles, setSparkles] = useState<T_SparkleData>([]);
 
   const [tool, setTool] = useState("pen");
   const [lines, setLines] = useState<any>([]);
@@ -741,6 +753,56 @@ export default function Home() {
   //   return snow;
   // }, []);
 
+  const handleSparkleComplete = useCallback((id: any) => {
+    setSparkles((prevSparkles) =>
+      prevSparkles.filter((sparkle) => sparkle.id !== id),
+    );
+  }, []);
+
+  useEffect(() => {
+    if (lorePos > 0 && princessLore && imgCtnRef.current) {
+      const generateSparkle = () => {
+        if (!imgCtnRef.current) return;
+
+        const { offsetWidth, offsetHeight } = imgCtnRef.current;
+        const side = Math.floor(Math.random() * 4);
+
+        let spawnX, spawnY;
+
+        if (side === 0) {
+          spawnX = Math.random() * offsetWidth;
+          spawnY = -5;
+        } else if (side === 1) {
+          spawnX = offsetWidth + 5;
+          spawnY = Math.random() * offsetHeight;
+        } else if (side === 2) {
+          spawnX = Math.random() * offsetWidth;
+          spawnY = offsetHeight + 5;
+        } else {
+          spawnX = -5;
+          spawnY = Math.random() * offsetHeight;
+        }
+
+        const newSparkle = {
+          id: Date.now() + Math.random(),
+          top: `${spawnY}px`,
+          left: `${spawnX}px`,
+          duration: Math.random() + 0.7,
+          delay: 0,
+        };
+
+        setSparkles((prevSparkles) => [...prevSparkles, newSparkle]);
+      };
+
+      const interval = setInterval(() => {
+        generateSparkle();
+        generateSparkle();
+      }, 10);
+
+      return () => clearInterval(interval);
+    }
+  }, [lorePos, princessLore]);
+
   return (
     <div
       className={styles.page}
@@ -872,25 +934,72 @@ export default function Home() {
                     },
                   }}
                 >
-                  {lorePos > 1 && (
-                    <button
-                      onClick={() => {
-                        playBack();
-                        setLorePos(lorePos - 1);
-                      }}
-                    >
-                      {"<"} Previous
-                    </button>
-                  )}
-                  {lorePos > 0 && lorePos < 15 && (
-                    <Image
-                      src={`/lore/goodnightgoatlore_${lorePos}.png`}
-                      alt={"lore"}
-                      width={400}
-                      height={400}
-                      className={styles.loreImg}
-                    />
-                  )}
+                  {/*{lorePos > 1 && (*/}
+                  {/*  <button*/}
+                  {/*    onClick={() => {*/}
+                  {/*      playBack();*/}
+                  {/*      setLorePos(lorePos - 1);*/}
+                  {/*    }}*/}
+                  {/*  >*/}
+                  {/*    {"<"} Previous*/}
+                  {/*  </button>*/}
+                  {/*)}*/}
+
+                  <div className={styles.imgCtn} ref={imgCtnRef}>
+                    <div className={styles.glowCtn}>
+                      <GlowEffect
+                        colors={["#0894FF", "#C959DD", "#FF2E54", "#FF9004"]}
+                        mode="colorShift"
+                        blur="medium"
+                        duration={4}
+                      />
+                    </div>
+
+                    {Array.from({ length: 14 }, (_, i) => i + 1).map((i) => (
+                      <Image
+                        src={`/lore/goodnightgoatlore_${i}.png`}
+                        alt={"lore"}
+                        width={1920}
+                        height={1080}
+                        className={clsx(
+                          styles.loreImg,
+                          lorePos === i && styles.loreImgVisible,
+                        )}
+                        loading={"eager"}
+                      />
+                    ))}
+
+                    {sparkles.map(
+                      ({
+                        id,
+                        ...props
+                      }: {
+                        id: number;
+                        top: string;
+                        left: string;
+                        duration: number;
+                        delay: number;
+                      }) => (
+                        <Sparkle
+                          key={id}
+                          direction="center"
+                          {...props}
+                          onAnimationComplete={() => handleSparkleComplete(id)}
+                        />
+                      ),
+                    )}
+                  </div>
+
+                  {/*{lorePos > 0 && lorePos < 15 && (*/}
+                  {/*  <Image*/}
+                  {/*    src={`/lore/goodnightgoatlore_${lorePos}.png`}*/}
+                  {/*    alt={"lore"}*/}
+                  {/*    width={400}*/}
+                  {/*    height={400}*/}
+                  {/*    className={styles.loreImg}*/}
+                  {/*    loading={"eager"}*/}
+                  {/*  />*/}
+                  {/*)}*/}
                   {lorePos < 14 && (
                     <button
                       onClick={() => {

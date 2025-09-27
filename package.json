@@ -14,7 +14,7 @@
     "clsx": "^2.1.1",
     "fuse.js": "^7.1.0",
     "luxon": "^3.7.1",
-    "motion": "^12.23.12",
+    "motion": "^12.23.22",
     "next": "15.5.2",
     "react": "19.1.0",
     "react-color": "^2.19.3",
@@ -25,6 +25,7 @@
     "react-snowfall": "^2.3.0",
     "react-use-measure": "^2.1.7",
     "spoiled": "^0.4.0",
+    "tailwind-merge": "^3.3.1",
     "use-sound": "^5.0.0"
   },
   "devDependencies": {

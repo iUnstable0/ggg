@@ -2,53 +2,15 @@
 import { motion, Transition, Easing } from "motion/react";
 import { useEffect, useRef, useState, useMemo } from "react";
 
+import Sparkle from "./sparkles";
+
 type SparkleData = {
   id: number;
   top: string;
   left: string;
   duration: number;
   delay: number;
-};
-
-const Sparkle: React.FC<Omit<SparkleData, "id">> = ({
-  top,
-  left,
-  duration,
-  delay,
-}) => {
-  return (
-    <motion.div
-      style={{
-        position: "absolute",
-        top,
-        left,
-        width: "5px",
-        height: "5px",
-        zIndex: 1,
-      }}
-      initial={{
-        opacity: 0,
-        scale: 0,
-        y: 0,
-        x: 0,
-        background:
-          "radial-gradient(circle, rgba(255,223,0,0.8) 0%, rgba(255,223,0,0) 70%)",
-      }}
-      animate={{
-        y: [0, -50, -100],
-        x: [0, 10, 20],
-        opacity: [0, 1, 0.5, 0],
-        scale: [0, 1.1, 0.8, 0],
-      }}
-      transition={{
-        delay,
-        duration,
-        ease: "linear",
-        times: [0, 0.2, 0.7, 1],
-      }}
-    />
-  );
-};
+}[];
 
 type BlurTextProps = {
   text?: string;
@@ -95,7 +57,7 @@ const BlurText: React.FC<BlurTextProps> = ({
   const elements = animateBy === "words" ? text.split(" ") : text.split("");
   const [inView, setInView] = useState(false);
   const ref = useRef<HTMLParagraphElement>(null);
-  const [sparkles, setSparkles] = useState<SparkleData[]>([]);
+  const [sparkles, setSparkles] = useState<SparkleData>([]);
 
   const defaultFrom = {
     filter: "blur(10px)",
