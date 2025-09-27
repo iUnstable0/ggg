@@ -415,6 +415,92 @@ export default function Home() {
       interrupt: true,
     });
 
+  const [playLore1, { stop: stopLore1 }] = useSound(
+    "/sounds/goodnightgoatloreaudio_1.mp3",
+    { interrupt: true, loop: true },
+  );
+  const [playLore2, { stop: stopLore2 }] = useSound(
+    "/sounds/goodnightgoatloreaudio_2.mp3",
+    { interrupt: true, loop: true },
+  );
+  const [playLore3, { stop: stopLore3 }] = useSound(
+    "/sounds/goodnightgoatloreaudio_3.mp3",
+    { interrupt: true, loop: true },
+  );
+  const [playLore4, { stop: stopLore4 }] = useSound(
+    "/sounds/goodnightgoatloreaudio_4.mp3",
+    { interrupt: true, loop: true },
+  );
+  const [playLore5, { stop: stopLore5 }] = useSound(
+    "/sounds/goodnightgoatloreaudio_5.mp3",
+    { interrupt: true, loop: true },
+  );
+  const [playLore6, { stop: stopLore6 }] = useSound(
+    "/sounds/goodnightgoatloreaudio_6.mp3",
+    { interrupt: true, loop: true },
+  );
+  const [playLore7, { stop: stopLore7 }] = useSound(
+    "/sounds/goodnightgoatloreaudio_7.mp3",
+    { interrupt: true, loop: true },
+  );
+  const [playLore8, { stop: stopLore8 }] = useSound(
+    "/sounds/goodnightgoatloreaudio_8.mp3",
+    { interrupt: true, loop: true },
+  );
+  const [playLore9, { stop: stopLore9 }] = useSound(
+    "/sounds/goodnightgoatloreaudio_9.mp3",
+    { interrupt: true, loop: true },
+  );
+  const [playLore10, { stop: stopLore10 }] = useSound(
+    "/sounds/goodnightgoatloreaudio_10.mp3",
+    { interrupt: true, loop: true },
+  );
+  const [playLore11, { stop: stopLore11 }] = useSound(
+    "/sounds/goodnightgoatloreaudio_11.mp3",
+    { interrupt: true, loop: true },
+  );
+  const [playLore12, { stop: stopLore12 }] = useSound(
+    "/sounds/goodnightgoatloreaudio_12.mp3",
+    { interrupt: true, loop: true },
+  );
+  const [playLore13, { stop: stopLore13 }] = useSound(
+    "/sounds/goodnightgoatloreaudio_13.mp3",
+    { interrupt: true, loop: true },
+  );
+  const [playLore14, { stop: stopLore14 }] = useSound(
+    "/sounds/goodnightgoatloreaudio_14.mp3",
+    { interrupt: true, loop: true },
+  );
+
+  const loreAudio = [
+    { stop: stopLore1, play: playLore1 },
+    { stop: stopLore2, play: playLore2 },
+    { stop: stopLore3, play: playLore3 },
+    { stop: stopLore4, play: playLore4 },
+    { stop: stopLore5, play: playLore5 },
+    { stop: stopLore6, play: playLore6 },
+    { stop: stopLore7, play: playLore7 },
+    { stop: stopLore8, play: playLore8 },
+    { stop: stopLore9, play: playLore9 },
+    { stop: stopLore10, play: playLore10 },
+    { stop: stopLore11, play: playLore11 },
+    { stop: stopLore12, play: playLore12 },
+    { stop: stopLore13, play: playLore13 },
+    { stop: stopLore14, play: playLore14 },
+  ];
+
+  useEffect(() => {
+    loreAudio.forEach((audio) => audio.stop());
+
+    if (princessLore && lorePos > 0 && lorePos <= 14) {
+      loreAudio[lorePos - 1].play();
+    }
+
+    return () => {
+      loreAudio.forEach((audio) => audio.stop());
+    };
+  }, [lorePos, princessLore]);
+
   const queue = [
     [playPrincess, stopPrincess],
     [playWhirl, stopWhirl],
