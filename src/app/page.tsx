@@ -32,6 +32,10 @@ import styles from "./page.module.css";
 import { SlidingNumber } from "@/components/sliding-number";
 import BlurText from "@/components/blur-text";
 import { GlowEffect } from "@/components/glow-effect";
+import { KeybindButton, T_Keybind } from "@/components/keybind";
+
+import { BorderTrail } from "@/components/border";
+
 const fuse = new Fuse(emojis, {});
 
 const VID_LIMIT = 20;
@@ -329,11 +333,30 @@ export default function Home() {
   const [firstPrincess, setFirstPrincess] = useState<boolean>(true);
   const [princessLore, setPrincessLore] = useState<boolean>(false);
   const [lorePos, setLorePos] = useState<number>(-1);
+  const [loreDirection, setLoreDirection] = useState<"next" | "prev">("next");
 
   const [position, setPosition] = useState({
     x: 0,
     y: 0,
   });
+
+  const loreImgVariants = {
+    animate: {
+      transform: "scale(1)",
+      opacity: 1,
+      filter: "blur(0px) grayscale(0%)",
+    },
+    initial: (direction: "next" | "prev") => ({
+      transform: `scale(${direction === "next" ? 1.2 : 0.8})`,
+      filter: "blur(20px) grayscale(100%)",
+      opacity: 0,
+    }),
+    exit: (direction: "next" | "prev") => ({
+      transform: `scale(${direction === "next" ? 0.8 : 1.2})`,
+      filter: "blur(20px) grayscale(100%)",
+      opacity: 0,
+    }),
+  };
 
   const [playPrincess, { stop: stopPrincess }] = useSound(
     "/sounds/princess.mp3",
@@ -787,7 +810,7 @@ export default function Home() {
           id: Date.now() + Math.random(),
           top: `${spawnY}px`,
           left: `${spawnX}px`,
-          duration: Math.random() + 0.7,
+          duration: Math.random() + 2.7,
           delay: 0,
         };
 
@@ -797,7 +820,7 @@ export default function Home() {
       const interval = setInterval(() => {
         generateSparkle();
         generateSparkle();
-      }, 10);
+      }, 5);
 
       return () => clearInterval(interval);
     }
@@ -955,19 +978,147 @@ export default function Home() {
                       />
                     </div>
 
-                    {Array.from({ length: 14 }, (_, i) => i + 1).map((i) => (
-                      <Image
-                        src={`/lore/goodnightgoatlore_${i}.png`}
-                        alt={"lore"}
-                        width={1920}
-                        height={1080}
-                        className={clsx(
-                          styles.loreImg,
-                          lorePos === i && styles.loreImgVisible,
-                        )}
-                        loading={"eager"}
-                      />
-                    ))}
+                    <div className={styles.controls}>
+                      <motion.button
+                        className={styles.loreBtn}
+                        initial={{
+                          transform: "scale(1.5)",
+                          filter: "blur(0px) brightness(1)",
+                          opacity: 0,
+                        }}
+                        animate={{
+                          transform: lorePos > 1 ? "scale(1)" : "scale(1.5)",
+                          filter:
+                            lorePos > 1
+                              ? "blur(0px) brightness(1)"
+                              : "blur(4px) brightness(0.6)",
+                          opacity: lorePos > 1 ? 1 : 0,
+                        }}
+                        exit={{
+                          transform: "scale(1.5)",
+                          filter: "blur(4px) brightness(0.6)",
+                          opacity: 0,
+                        }}
+                        transition={{
+                          type: "spring",
+                          damping: 20,
+                          stiffness: 120,
+                          opacity: { duration: 0.2 },
+                        }}
+                        whileHover={{
+                          transform: "scale(1.1)",
+                        }}
+                        whileTap={{
+                          transform: "scale(0.9)",
+                        }}
+                        disabled={lorePos <= 1}
+                        onClick={() => {
+                          playBack();
+
+                          setLoreDirection("prev");
+
+                          if (lorePos > 1) {
+                            setLorePos(lorePos - 1);
+                          }
+                        }}
+                      >
+                        <BorderTrail
+                          style={{
+                            boxShadow:
+                              "0px 0px 60px 30px rgb(255 255 255 / 50%), 0 0 100px 60px rgb(0 0 0 / 50%), 0 0 140px 90px rgb(0 0 0 / 50%)",
+                          }}
+                          size={20}
+                        />
+                        {"<"}
+                      </motion.button>
+                      <motion.button
+                        className={styles.loreBtn}
+                        initial={{
+                          transform: "scale(1.5)",
+                          filter: "blur(0px), brightness(1)",
+                          opacity: 0,
+                        }}
+                        animate={{
+                          transform: "scale(1)",
+                          filter: "blur(0px) brightness(1)",
+                          opacity: 1,
+                        }}
+                        exit={{
+                          transform: "scale(1.5)",
+                          filter: "blur(4px), brightness(0.6)",
+                          opacity: 0,
+                        }}
+                        transition={{
+                          type: "spring",
+                          damping: 20,
+                          stiffness: 120,
+                          opacity: { duration: 0.2 },
+                        }}
+                        whileHover={{
+                          transform: "scale(1.1)",
+                        }}
+                        whileTap={{
+                          transform: "scale(0.9)",
+                        }}
+                        onClick={() => {
+                          if (lorePos === 14) {
+                            setPrincessLore(false);
+                            setIsPrincess(true);
+                            return;
+                          }
+
+                          playNext();
+
+                          setLoreDirection("next");
+
+                          if (lorePos < 14) {
+                            setLorePos(lorePos + 1);
+                          }
+                        }}
+                      >
+                        <BorderTrail
+                          style={{
+                            boxShadow:
+                              "0px 0px 60px 30px rgb(255 255 255 / 50%), 0 0 100px 60px rgb(0 0 0 / 50%), 0 0 140px 90px rgb(0 0 0 / 50%)",
+                          }}
+                          size={20}
+                        />
+                        {`${lorePos == 14 ? "x" : ">"}`}
+                      </motion.button>
+                    </div>
+
+                    <AnimatePresence mode="popLayout" custom={loreDirection}>
+                      {lorePos > 0 && (
+                        <motion.div
+                          key={lorePos}
+                          className={styles.loreImgWrapper}
+                          custom={loreDirection}
+                          variants={loreImgVariants}
+                          initial="initial"
+                          animate="animate"
+                          exit="exit"
+                          transition={{
+                            type: "spring",
+                            damping: 20,
+                            stiffness: 120,
+                            opacity: { duration: 0.2 },
+                            filter: {
+                              duration: 0.2,
+                            },
+                          }}
+                        >
+                          <Image
+                            src={`/lore/goodnightgoatlore_${lorePos}.png`}
+                            alt={"lore"}
+                            width={1920}
+                            height={1080}
+                            className={styles.loreImg}
+                            loading={"eager"}
+                            priority={true}
+                          />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
 
                     {sparkles.map(
                       ({
@@ -989,37 +1140,6 @@ export default function Home() {
                       ),
                     )}
                   </div>
-
-                  {/*{lorePos > 0 && lorePos < 15 && (*/}
-                  {/*  <Image*/}
-                  {/*    src={`/lore/goodnightgoatlore_${lorePos}.png`}*/}
-                  {/*    alt={"lore"}*/}
-                  {/*    width={400}*/}
-                  {/*    height={400}*/}
-                  {/*    className={styles.loreImg}*/}
-                  {/*    loading={"eager"}*/}
-                  {/*  />*/}
-                  {/*)}*/}
-                  {lorePos < 14 && (
-                    <button
-                      onClick={() => {
-                        playNext();
-                        setLorePos(lorePos + 1);
-                      }}
-                    >
-                      Next {">"}
-                    </button>
-                  )}
-                  {lorePos == 14 && (
-                    <button
-                      onClick={() => {
-                        setPrincessLore(false);
-                        setIsPrincess(true);
-                      }}
-                    >
-                      End of story click to exit
-                    </button>
-                  )}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -1514,7 +1634,7 @@ export default function Home() {
             </div>
 
             <div className={styles.emojiCtn}>
-              <AnimatePresence mode={"popLayout"}>
+              <AnimatePresence mode="popLayout">
                 {searchResults.map((r) => (
                   <motion.button
                     key={r}

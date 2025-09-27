@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
+import { useMemo } from "react";
 
 export default function Sparkle({
-  key,
   top,
   left,
   duration,
@@ -9,7 +9,6 @@ export default function Sparkle({
   onAnimationComplete,
   direction = "up",
 }: {
-  key: number;
   top: string;
   left: string;
   duration: number;
@@ -17,37 +16,51 @@ export default function Sparkle({
   onAnimationComplete?: () => void;
   direction?: "left" | "right" | "up" | "down" | "center";
 }) {
-  let targetY;
-  let targetX;
+  const { targetX, targetY } = useMemo(() => {
+    let finalX, finalY;
+    const distance = Math.random() * 75 + 50;
 
-  switch (direction) {
-    case "up":
-      targetY = [0, -50, -100];
-      targetX = [0, 10, 20];
-      break;
-    case "down":
-      targetY = [0, 50, 100];
-      targetX = [0, 10, 20];
-      break;
-    case "left":
-      targetY = [0, 10, 20];
-      targetX = [0, -50, -100];
-      break;
-    case "right":
-      targetY = [0, 10, 20];
-      targetX = [0, 50, 100];
-      break;
-    case "center":
-      targetY = [0, 100];
-      targetX = [0, 100];
-      break;
-    default:
-      targetY = [0, -50, -100];
-      targetX = [0, 10, 20];
-  }
+    switch (direction) {
+      case "center":
+        const angle = Math.random() * 2 * Math.PI;
+
+        finalX = Math.cos(angle) * distance;
+        finalY = Math.sin(angle) * distance;
+
+        break;
+      case "up":
+        finalY = -distance;
+        finalX = (Math.random() - 0.5) * distance;
+
+        break;
+      case "down":
+        finalY = distance;
+        finalX = (Math.random() - 0.5) * distance;
+
+        break;
+      case "left":
+        finalX = -distance;
+        finalY = (Math.random() - 0.5) * distance;
+
+        break;
+      case "right":
+        finalX = distance;
+        finalY = (Math.random() - 0.5) * distance;
+
+        break;
+      default:
+        finalY = -distance;
+        finalX = (Math.random() - 0.5) * distance;
+    }
+
+    return {
+      targetY: [0, finalY / 2, finalY],
+      targetX: [0, finalX / 2, finalX],
+    };
+  }, [direction]);
+
   return (
     <motion.div
-      key={key}
       style={{
         position: "absolute",
         top,
@@ -65,8 +78,6 @@ export default function Sparkle({
           "radial-gradient(circle, rgba(255,223,0,0.8) 0%, rgba(255,223,0,0) 70%)",
       }}
       animate={{
-        // y: [0, -50, -100],
-        // x: [0, 10, 20],
         y: targetY,
         x: targetX,
         opacity: [0, 1, 0.5, 0],
