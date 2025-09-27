@@ -913,6 +913,19 @@ export default function Home() {
               },
             }}
           >
+            <div style={{ display: "none" }}>
+              {Array.from({ length: 14 }, (_, i) => i + 1).map((num) => (
+                <Image
+                  key={`preload-${num}`}
+                  src={`/lore/goodnightgoatlore_${num}.png`}
+                  alt=""
+                  width={1920}
+                  height={1080}
+                  priority={true}
+                />
+              ))}
+            </div>
+
             {lorePos === -1 && (
               <div className={styles.titleGoat}>
                 <BlurText
@@ -930,14 +943,14 @@ export default function Home() {
             )}
 
             {/*{lorePos < 14 && (*/}
-            {/*  <button*/}
-            {/*    onClick={() => {*/}
-            {/*      setPrincessLore(false);*/}
-            {/*      setIsPrincess(true);*/}
-            {/*    }}*/}
-            {/*  >*/}
-            {/*    Skip story*/}
-            {/*  </button>*/}
+            {/* <button*/}
+            {/* onClick={() => {*/}
+            {/* setPrincessLore(false);*/}
+            {/* setIsPrincess(true);*/}
+            {/* }}*/}
+            {/* >*/}
+            {/* Skip story*/}
+            {/* </button>*/}
             {/*)}*/}
 
             <AnimatePresence>
@@ -957,14 +970,14 @@ export default function Home() {
                   }}
                 >
                   {/*{lorePos > 1 && (*/}
-                  {/*  <button*/}
-                  {/*    onClick={() => {*/}
-                  {/*      playBack();*/}
-                  {/*      setLorePos(lorePos - 1);*/}
-                  {/*    }}*/}
-                  {/*  >*/}
-                  {/*    {"<"} Previous*/}
-                  {/*  </button>*/}
+                  {/* <button*/}
+                  {/* onClick={() => {*/}
+                  {/* playBack();*/}
+                  {/* setLorePos(lorePos - 1);*/}
+                  {/* }}*/}
+                  {/* >*/}
+                  {/* {"<"} Previous*/}
+                  {/* </button>*/}
                   {/*)}*/}
 
                   <div className={styles.imgCtn} ref={imgCtnRef}>
@@ -1113,6 +1126,7 @@ export default function Home() {
                             height={1080}
                             className={styles.loreImg}
                             loading={"eager"}
+                            decoding={"async"}
                             priority={true}
                           />
                         </motion.div>
