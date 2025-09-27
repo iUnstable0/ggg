@@ -32,7 +32,6 @@ import styles from "./page.module.css";
 import { SlidingNumber } from "@/components/sliding-number";
 import BlurText from "@/components/blur-text";
 import { GlowEffect } from "@/components/glow-effect";
-import { KeybindButton, T_Keybind } from "@/components/keybind";
 
 import { BorderTrail } from "@/components/border";
 
