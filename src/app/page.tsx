@@ -291,7 +291,7 @@ export default function Home() {
     delay: number;
   }[];
 
-  const onDrop = useCallback((acceptedFiles) => {
+  const onDrop = useCallback((acceptedFiles: any) => {
     const file = acceptedFiles[0];
 
     // 	if file not video or image
@@ -715,12 +715,12 @@ export default function Home() {
     });
   };
 
-  const parseFile = async (file: File) => {
+  const parseFile = async (file: File, e?: any) => {
     if (file.type.startsWith("video")) {
       if (await videoValid(file)) {
         toast.error(`Video too long max ${VID_LIMIT} secs`);
 
-        e.target.value = "";
+        if (e) e.target.value = "";
 
         return;
       }
@@ -739,7 +739,7 @@ export default function Home() {
     const file = (e.target as HTMLInputElement).files?.[0];
     if (!file) return;
 
-    parseFile(file);
+    void parseFile(file, e);
   };
 
   const previewGoatVideo = async (formData: FormData) => {
