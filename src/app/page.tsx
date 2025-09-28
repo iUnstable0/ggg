@@ -11,6 +11,8 @@ import clsx from "clsx";
 
 import Snowfall from "react-snowfall";
 
+import { useDropzone } from "react-dropzone";
+
 import { Stage, Layer, Line, Text } from "react-konva";
 
 import toast, { Toaster } from "react-hot-toast";
@@ -77,13 +79,20 @@ function FileSelection({
   onFileInput,
   isPrincess,
   file,
+  isDragActive,
 }: {
   onFileInput: (e: any) => Promise<void>;
   isPrincess: boolean;
   file: File;
+  isDragActive: boolean;
 }) {
   return (
     <>
+      {isDragActive ? (
+        <p>Drop the files here ...</p>
+      ) : (
+        <p>You can also drag and drop files here!</p>
+      )}
       <input
         style={{
           cursor: isPrincess ? "none" : "default",
@@ -281,6 +290,28 @@ export default function Home() {
     duration: number;
     delay: number;
   }[];
+
+  const onDrop = useCallback((acceptedFiles) => {
+    const file = acceptedFiles[0];
+
+    // 	if file not video or image
+    if (!file.type.startsWith("image") && !file.type.startsWith("video")) {
+      toast.error("Only image and video files are supported.");
+      return;
+    }
+
+    void parseFile(file);
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    multiple: false,
+    noClick: true,
+    accept: {
+      "image/*": [],
+      "video/*": [],
+    },
+  });
 
   const imgCtnRef = useRef(null);
   const [sparkles, setSparkles] = useState<T_SparkleData>([]);
@@ -684,10 +715,7 @@ export default function Home() {
     });
   };
 
-  const onFileInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = (e.target as HTMLInputElement).files?.[0];
-    if (!file) return;
-
+  const parseFile = async (file: File) => {
     if (file.type.startsWith("video")) {
       if (await videoValid(file)) {
         toast.error(`Video too long max ${VID_LIMIT} secs`);
@@ -705,6 +733,13 @@ export default function Home() {
       playSparkle();
       playTsHurtMyEars();
     }
+  };
+
+  const onFileInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+
+    parseFile(file);
   };
 
   const previewGoatVideo = async (formData: FormData) => {
@@ -836,31 +871,6 @@ export default function Home() {
     ]);
   }, []);
 
-  // const snowflake1 = useMemo(() => {
-  //   if (!document) return;
-  //   let snow = document.createElement("img");
-  //   snow.src = "/cherry1.png";
-  //   return snow;
-  // }, []);
-  // const snowflake2 = useMemo(() => {
-  //   if (!document) return;
-  //   let snow = document.createElement("img");
-  //   snow.src = "/cherry2.png";
-  //   return snow;
-  // }, []);
-  // const snowflake3 = useMemo(() => {
-  //   if (!document) return;
-  //   let snow = document.createElement("img");
-  //   snow.src = "/cherry3.png";
-  //   return snow;
-  // }, []);
-  // const snowflake4 = useMemo(() => {
-  //   if (!document) return;
-  //   let snow = document.createElement("img");
-  //   snow.src = "/cherry4.png";
-  //   return snow;
-  // }, []);
-
   const handleSparkleComplete = useCallback((id: any) => {
     setSparkles((prevSparkles) =>
       prevSparkles.filter((sparkle) => sparkle.id !== id),
@@ -917,7 +927,12 @@ export default function Home() {
       style={{
         cursor: isPrincess ? "none" : "default",
       }}
+      {...getRootProps()}
     >
+      {/*<div {...getRootProps()} className={styles.dropZone}>*/}
+      <input {...getInputProps()} />
+      {/*</div>*/}
+
       {isPrincess && snowflakes && (
         <div className={styles.snowDiv}>
           <Snowfall
@@ -1055,17 +1070,6 @@ export default function Home() {
                     },
                   }}
                 >
-                  {/*{lorePos > 1 && (*/}
-                  {/* <button*/}
-                  {/* onClick={() => {*/}
-                  {/* playBack();*/}
-                  {/* setLorePos(lorePos - 1);*/}
-                  {/* }}*/}
-                  {/* >*/}
-                  {/* {"<"} Previous*/}
-                  {/* </button>*/}
-                  {/*)}*/}
-
                   <div className={styles.imgCtn} ref={imgCtnRef}>
                     <div className={styles.glowCtn}>
                       <GlowEffect
@@ -1478,6 +1482,7 @@ export default function Home() {
         onFileInput={onFileInput}
         isPrincess={isPrincess}
         file={file!}
+        isDragActive={isDragActive}
       />
 
       <FilePreview
@@ -1815,8 +1820,17 @@ export default function Home() {
           onFileInput={onFileInput}
           isPrincess={isPrincess}
           file={file}
+          isDragActive={isDragActive}
         />
       )}
+
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
     </div>
   );
 }
