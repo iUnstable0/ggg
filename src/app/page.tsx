@@ -283,6 +283,9 @@ export default function Home() {
     interrupt: true,
   });
 
+  // const [duration, setDuration] = useState(0);
+  // const [musicPos, setMusicPos] = useState(0);
+
   type T_SparkleData = {
     id: number;
     top: string;
@@ -401,7 +404,7 @@ export default function Home() {
       onend: () => setMusicSelection(1),
       volume,
       html5: true,
-    },
+    }
   );
 
   const [playWhirl, { stop: stopWhirl, pause: pauseWhirl }] = useSound(
@@ -412,7 +415,7 @@ export default function Home() {
       onend: () => setMusicSelection(2),
       volume,
       html5: true,
-    },
+    }
   );
 
   const [playRoyal1, { stop: stopRoyal1, pause: pauseRoyal1 }] = useSound(
@@ -423,7 +426,7 @@ export default function Home() {
       onend: () => setMusicSelection(3),
       volume,
       html5: true,
-    },
+    }
   );
 
   const [playRoyal2, { stop: stopRoyal2, pause: pauseRoyal2 }] = useSound(
@@ -434,7 +437,7 @@ export default function Home() {
       onend: () => setMusicSelection(4),
       volume,
       html5: true,
-    },
+    }
   );
 
   const [playRoyal3, { stop: stopRoyal3, pause: pauseRoyal3 }] = useSound(
@@ -445,17 +448,14 @@ export default function Home() {
       onend: () => setMusicSelection(5),
       volume,
       html5: true,
-    },
+    }
   );
 
   const [playChristmas, { stop: stopChristmas, pause: pauseChristmas }] =
     useSound("/sounds/christmas.mp3", {
       interrupt: true,
       onplay: () => setPrincessPlaying(5),
-      onend: () => {
-        setMusicSelection(0);
-        // setPrincessPlaying(-1);
-      },
+      onend: () => setMusicSelection(0),
       volume,
       html5: true,
     });
@@ -475,59 +475,59 @@ export default function Home() {
 
   const [playLore1, { stop: stopLore1 }] = useSound(
     "/sounds/goodnightgoatloreaudio_1.mp3",
-    { interrupt: true, loop: true },
+    { interrupt: true, loop: true }
   );
   const [playLore2, { stop: stopLore2 }] = useSound(
     "/sounds/goodnightgoatloreaudio_2.mp3",
-    { interrupt: true, loop: true },
+    { interrupt: true, loop: true }
   );
   const [playLore3, { stop: stopLore3 }] = useSound(
     "/sounds/goodnightgoatloreaudio_3.mp3",
-    { interrupt: true, loop: true },
+    { interrupt: true, loop: true }
   );
   const [playLore4, { stop: stopLore4 }] = useSound(
     "/sounds/goodnightgoatloreaudio_4.mp3",
-    { interrupt: true, loop: true },
+    { interrupt: true, loop: true }
   );
   const [playLore5, { stop: stopLore5 }] = useSound(
     "/sounds/goodnightgoatloreaudio_5.mp3",
-    { interrupt: true, loop: true },
+    { interrupt: true, loop: true }
   );
   const [playLore6, { stop: stopLore6 }] = useSound(
     "/sounds/goodnightgoatloreaudio_6.mp3",
-    { interrupt: true, loop: true },
+    { interrupt: true, loop: true }
   );
   const [playLore7, { stop: stopLore7 }] = useSound(
     "/sounds/goodnightgoatloreaudio_7.mp3",
-    { interrupt: true, loop: true },
+    { interrupt: true, loop: true }
   );
   const [playLore8, { stop: stopLore8 }] = useSound(
     "/sounds/goodnightgoatloreaudio_8.mp3",
-    { interrupt: true, loop: true },
+    { interrupt: true, loop: true }
   );
   const [playLore9, { stop: stopLore9 }] = useSound(
     "/sounds/goodnightgoatloreaudio_9.mp3",
-    { interrupt: true, loop: true },
+    { interrupt: true, loop: true }
   );
   const [playLore10, { stop: stopLore10 }] = useSound(
     "/sounds/goodnightgoatloreaudio_10.mp3",
-    { interrupt: true, loop: true },
+    { interrupt: true, loop: true }
   );
   const [playLore11, { stop: stopLore11 }] = useSound(
     "/sounds/goodnightgoatloreaudio_11.mp3",
-    { interrupt: true, loop: true },
+    { interrupt: true, loop: true }
   );
   const [playLore12, { stop: stopLore12 }] = useSound(
     "/sounds/goodnightgoatloreaudio_12.mp3",
-    { interrupt: true, loop: true },
+    { interrupt: true, loop: true }
   );
   const [playLore13, { stop: stopLore13 }] = useSound(
     "/sounds/goodnightgoatloreaudio_13.mp3",
-    { interrupt: true, loop: true },
+    { interrupt: true, loop: true }
   );
   const [playLore14, { stop: stopLore14 }] = useSound(
     "/sounds/goodnightgoatloreaudio_14.mp3",
-    { interrupt: true, loop: true },
+    { interrupt: true, loop: true }
   );
 
   const loreAudio = [
@@ -710,13 +710,13 @@ export default function Home() {
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/delete`,
         {
           name: goatName,
-        },
+        }
       );
 
       console.log(res.data);
     } catch (error) {
       console.error(
-        "Error deleting old goat lol it will delete on its own anyway ",
+        "Error deleting old goat lol it will delete on its own anyway "
       );
     }
 
@@ -783,11 +783,11 @@ export default function Home() {
           onUploadProgress: (pg) => {
             setUploadPg(pg.progress || 0);
           },
-        },
+        }
       );
 
       setGoatedImage(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/files/${res.data.filename}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/files/${res.data.filename}`
       );
 
       if (isPrincess) {
@@ -816,11 +816,11 @@ export default function Home() {
           onUploadProgress: (pg) => {
             setUploadPg(pg.progress || 0);
           },
-        },
+        }
       );
 
       setGoatedImage(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/files/${res.data.filename}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/files/${res.data.filename}`
       );
 
       if (isPrincess) {
@@ -900,7 +900,7 @@ export default function Home() {
 
   const handleSparkleComplete = useCallback((id: any) => {
     setSparkles((prevSparkles) =>
-      prevSparkles.filter((sparkle) => sparkle.id !== id),
+      prevSparkles.filter((sparkle) => sparkle.id !== id)
     );
   }, []);
 
@@ -932,17 +932,26 @@ export default function Home() {
           id: Date.now() + Math.random(),
           top: `${spawnY}px`,
           left: `${spawnX}px`,
-          duration: Math.random() + 2.7,
+          duration: lorePos === 12 ? Math.random() : Math.random() + 2.7,
           delay: 0,
         };
 
         setSparkles((prevSparkles) => [...prevSparkles, newSparkle]);
       };
 
-      const interval = setInterval(() => {
-        generateSparkle();
-        generateSparkle();
-      }, 5);
+      const interval = setInterval(
+        () => {
+          generateSparkle();
+          generateSparkle();
+
+          if (lorePos === 12) {
+            for (let i = 0; i < 12; i++) {
+              generateSparkle();
+            }
+          }
+        },
+        lorePos === 12 ? 1 : 5
+      );
 
       return () => clearInterval(interval);
     }
@@ -1100,10 +1109,27 @@ export default function Home() {
                   <div className={styles.imgCtn} ref={imgCtnRef}>
                     <div className={styles.glowCtn}>
                       <GlowEffect
-                        colors={["#0894FF", "#C959DD", "#FF2E54", "#FF9004"]}
-                        mode="colorShift"
+                        colors={
+                          lorePos === 12
+                            ? [
+                                "#0894FF",
+                                "#C959DD",
+                                "#FF2E54",
+                                "#FF9004",
+                                "#0894FF",
+                                "#C959DD",
+                                "#FF2E54",
+                                "#FF9004",
+                                "#0894FF",
+                                "#C959DD",
+                                "#FF2E54",
+                                "#FF9004",
+                              ]
+                            : ["#0894FF", "#C959DD", "#FF2E54", "#FF9004"]
+                        }
+                        mode={lorePos === 12 ? "rotate" : "colorShift"}
                         blur="medium"
-                        duration={4}
+                        duration={lorePos === 12 ? 2 : 4}
                       />
                     </div>
 
@@ -1267,7 +1293,7 @@ export default function Home() {
                           {...props}
                           onAnimationComplete={() => handleSparkleComplete(id)}
                         />
-                      ),
+                      )
                     )}
                   </div>
                 </motion.div>
@@ -1285,6 +1311,7 @@ export default function Home() {
           <div className={styles.musicbar}>
             <div>
               <div>Royal FM 443 + 732 KHz</div>
+              {/* {duration} */}
               <button
                 onClick={() => {
                   setRoyalOptions(!royalOptions);
@@ -1301,7 +1328,7 @@ export default function Home() {
                 key={idx}
                 className={clsx(
                   styles.selection,
-                  musicSelection === idx && styles.selected,
+                  musicSelection === idx && styles.selected
                 )}
                 onClick={(e) => {
                   setMusicSelection(idx);
