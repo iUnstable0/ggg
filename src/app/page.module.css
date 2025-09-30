@@ -174,7 +174,7 @@
   bottom: 20px;
 
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
 
   .selection {
@@ -185,6 +185,10 @@
 
   .selected {
     border: 2px solid #a1589c;
+  }
+
+  .musicbar {
+    display: flex;
   }
 }
 
@@ -275,6 +279,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+
+  color: #fff;
 }
 
 .lore .loreCtn {

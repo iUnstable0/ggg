@@ -388,50 +388,77 @@ export default function Home() {
     }),
   };
 
-  const [playPrincess, { stop: stopPrincess }] = useSound(
+  const [volume, setVolume] = useState(0.5);
+  const [princessPause, setPrincessPause] = useState(false);
+
+  const [royalOptions, setRoyalOptions] = useState(false);
+
+  const [playPrincess, { stop: stopPrincess, pause: pausePrincess }] = useSound(
     "/sounds/princess.mp3",
     {
       interrupt: true,
       onplay: () => setPrincessPlaying(0),
       onend: () => setMusicSelection(1),
+      volume,
+      html5: true,
     },
   );
 
-  const [playWhirl, { stop: stopWhirl }] = useSound("/sounds/whirl.mp3", {
-    interrupt: true,
-    onplay: () => setPrincessPlaying(1),
-    onend: () => setMusicSelection(2),
-  });
-
-  const [playRoyal1, { stop: stopRoyal1 }] = useSound("/sounds/royal1.mp3", {
-    interrupt: true,
-    onplay: () => setPrincessPlaying(2),
-    onend: () => setMusicSelection(3),
-  });
-
-  const [playRoyal2, { stop: stopRoyal2 }] = useSound("/sounds/royal2.mp3", {
-    interrupt: true,
-    onplay: () => setPrincessPlaying(3),
-    onend: () => setMusicSelection(4),
-  });
-
-  const [playRoyal3, { stop: stopRoyal3 }] = useSound("/sounds/royal3.mp3", {
-    interrupt: true,
-    onplay: () => setPrincessPlaying(4),
-    onend: () => setMusicSelection(5),
-  });
-
-  const [playChristmas, { stop: stopChristmas }] = useSound(
-    "/sounds/christmas.mp3",
+  const [playWhirl, { stop: stopWhirl, pause: pauseWhirl }] = useSound(
+    "/sounds/whirl.mp3",
     {
+      interrupt: true,
+      onplay: () => setPrincessPlaying(1),
+      onend: () => setMusicSelection(2),
+      volume,
+      html5: true,
+    },
+  );
+
+  const [playRoyal1, { stop: stopRoyal1, pause: pauseRoyal1 }] = useSound(
+    "/sounds/royal1.mp3",
+    {
+      interrupt: true,
+      onplay: () => setPrincessPlaying(2),
+      onend: () => setMusicSelection(3),
+      volume,
+      html5: true,
+    },
+  );
+
+  const [playRoyal2, { stop: stopRoyal2, pause: pauseRoyal2 }] = useSound(
+    "/sounds/royal2.mp3",
+    {
+      interrupt: true,
+      onplay: () => setPrincessPlaying(3),
+      onend: () => setMusicSelection(4),
+      volume,
+      html5: true,
+    },
+  );
+
+  const [playRoyal3, { stop: stopRoyal3, pause: pauseRoyal3 }] = useSound(
+    "/sounds/royal3.mp3",
+    {
+      interrupt: true,
+      onplay: () => setPrincessPlaying(4),
+      onend: () => setMusicSelection(5),
+      volume,
+      html5: true,
+    },
+  );
+
+  const [playChristmas, { stop: stopChristmas, pause: pauseChristmas }] =
+    useSound("/sounds/christmas.mp3", {
       interrupt: true,
       onplay: () => setPrincessPlaying(5),
       onend: () => {
         setMusicSelection(0);
         // setPrincessPlaying(-1);
       },
-    },
-  );
+      volume,
+      html5: true,
+    });
 
   const [playBack, { stop: stopBack }] = useSound("/sounds/lore_back.mp3", {
     interrupt: true,
@@ -533,12 +560,12 @@ export default function Home() {
   }, [lorePos, princessLore]);
 
   const queue = [
-    [playPrincess, stopPrincess],
-    [playWhirl, stopWhirl],
-    [playRoyal1, stopRoyal1],
-    [playRoyal2, stopRoyal2],
-    [playRoyal3, stopRoyal3],
-    [playChristmas, stopChristmas],
+    [playPrincess, stopPrincess, pausePrincess],
+    [playWhirl, stopWhirl, pauseWhirl],
+    [playRoyal1, stopRoyal1, pauseRoyal1],
+    [playRoyal2, stopRoyal2, pauseRoyal2],
+    [playRoyal3, stopRoyal3, pauseRoyal3],
+    [playChristmas, stopChristmas, pauseChristmas],
   ];
 
   const handleMouseDown = (e: any) => {
@@ -1255,24 +1282,74 @@ export default function Home() {
 
       {isPrincess && (
         <div className={styles.princessmusicselection}>
-          Royal FM 443 + 732 KHz
-          {queue.map((song, idx) => (
-            <button
-              style={{
-                cursor: isPrincess ? "none" : "default",
-              }}
-              key={idx}
-              className={clsx(
-                styles.selection,
-                musicSelection === idx && styles.selected,
-              )}
-              onClick={(e) => {
-                setMusicSelection(idx);
-              }}
-            >
-              {idx}
-            </button>
-          ))}
+          <div className={styles.musicbar}>
+            <div>
+              <div>Royal FM 443 + 732 KHz</div>
+              <button
+                onClick={() => {
+                  setRoyalOptions(!royalOptions);
+                }}
+              >
+                click to toggle options
+              </button>
+            </div>
+            {queue.map((song, idx) => (
+              <button
+                style={{
+                  cursor: isPrincess ? "none" : "default",
+                }}
+                key={idx}
+                className={clsx(
+                  styles.selection,
+                  musicSelection === idx && styles.selected,
+                )}
+                onClick={(e) => {
+                  setMusicSelection(idx);
+                }}
+              >
+                {idx}
+              </button>
+            ))}
+          </div>
+
+          {royalOptions && (
+            <div className={styles.musicbar}>
+              <div
+                style={{
+                  padding: "8px 16px",
+                }}
+              >
+                <button
+                  onClick={() => {
+                    // 	resume pr pause the song
+                    if (princessPause) {
+                      queue[musicSelection][0]();
+                      setPrincessPause(false);
+                    } else {
+                      queue[princessPlaying][2]();
+                      setPrincessPause(true);
+                      // setPrincessPlaying(-1);
+                    }
+                  }}
+                >
+                  {princessPause ? "Play" : "Stop"}
+                </button>
+              </div>
+
+              <label style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                Volume
+                <input
+                  type="range"
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={volume}
+                  onChange={(e) => setVolume(Number(e.target.value))}
+                />
+                <span>{Math.round(volume * 100)}%</span>
+              </label>
+            </div>
+          )}
         </div>
       )}
 
