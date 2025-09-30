@@ -88,11 +88,13 @@ function FileSelection({
   isPrincess,
   file,
   isDragActive,
+  fileInputRef,
 }: {
   onFileInput: (e: any) => Promise<void>;
   isPrincess: boolean;
   file: File;
   isDragActive: boolean;
+  fileInputRef: React.RefObject<HTMLInputElement>;
 }) {
   return (
     <>
@@ -111,6 +113,7 @@ function FileSelection({
         className={styles.fileInput}
         multiple={false}
         onChange={onFileInput}
+        ref={fileInputRef}
       />
       <label
         htmlFor={"img"}
@@ -261,6 +264,28 @@ function FilePreview({
                 gap: "10px",
               }}
             >
+              <motion.div
+                transition={{
+                  duration: 0.2,
+                }}
+                initial={{
+                  backdropFilter: "blur(0px)",
+                  opacity: 0,
+                }}
+                whileHover={{
+                  backdropFilter: "blur(10px)",
+                  opacity: 1,
+                }}
+                whileTap={{
+                  backdropFilter: "blur(10px)",
+                  opacity: 1,
+                  transform: "scale(1.1)",
+                }}
+                onClick={handleDownload}
+                className={styles.downloadBtn}
+              >
+                Click to download
+              </motion.div>
               <Image
                 src={goatedImage}
                 alt={"Goat preview"}
@@ -268,7 +293,7 @@ function FilePreview({
                 height={100}
                 className={styles.image}
               />
-              <button
+              {/* <button
                 onClick={handleDownload}
                 style={{
                   cursor: isPrincess ? "none" : "default",
@@ -276,8 +301,8 @@ function FilePreview({
                   padding: "4px",
                 }}
               >
-                Download Original File
-              </button>
+                Download
+              </button> */}
             </div>
           )}
         </div>
@@ -345,7 +370,7 @@ export default function Home() {
 
   const imgCtnRef = useRef(null);
   const goatedImageCtnRef = useRef(null);
-
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [sparkles, setSparkles] = useState<T_SparkleData>([]);
   const [goatedSparkles, setGoatedSparkles] = useState<T_SparkleData>([]);
 
@@ -716,6 +741,7 @@ export default function Home() {
       const diff = endDate.diff(DateTime.now(), ["minutes", "seconds"]);
 
       if (diff.minutes <= 0 && diff.seconds <= 0) {
+        fileInputRef.current!.value = "";
         setTimeRemaining(`0:00 (EXPIRED)`);
       } else {
         setTimeRemaining(`${diff.minutes}:${Math.round(diff.seconds)}`);
@@ -1051,6 +1077,7 @@ export default function Home() {
 
       {isPrincess && snowflakes && (
         <div className={styles.snowDiv}>
+          l
           <Snowfall
             images={[snowflakes[0]]}
             snowflakeCount={20}
@@ -1667,6 +1694,7 @@ export default function Home() {
         isPrincess={isPrincess}
         file={file!}
         isDragActive={isDragActive}
+        fileInputRef={fileInputRef as React.RefObject<HTMLInputElement>}
       />
 
       <FilePreview
@@ -2010,6 +2038,7 @@ export default function Home() {
           isPrincess={isPrincess}
           file={file}
           isDragActive={isDragActive}
+          fileInputRef={fileInputRef as React.RefObject<HTMLInputElement>}
         />
       )}
 
