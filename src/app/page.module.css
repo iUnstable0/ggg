@@ -22,9 +22,8 @@
 
 .header {
   font-size: 24px;
-}l
-
-.snowDiv {
+}
+l .snowDiv {
   position: fixed;
   top: 0;
   left: 0;
@@ -50,21 +49,35 @@
 }
 
 .previewCtn {
-  /*background: blue;*/
-
+  position: relative;
   outline: 2px solid #989898;
-
   width: 300px;
   height: 300px;
+}
+
+.previewGlowCtn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -100;
+}
+
+.imageGenCtn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
 }
 
 .noImage {
   display: flex;
   align-items: center;
   justify-content: center;
-
   height: 100%;
-
   width: 100%;
 }
 
@@ -324,6 +337,12 @@
   bottom: 0;
   z-index: -1;
 }
+
+/* .imageGenCtn {
+  position: relative;
+  width: 100%;
+  height: 100%;
+} */
 
 /* ++ MODIFIED: Remove animation properties from this class ++ */
 .lore .loreCtn .loreImg {

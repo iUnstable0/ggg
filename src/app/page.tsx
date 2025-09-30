@@ -179,7 +179,6 @@ function FilePreview({
               selected image will be shown here
             </div>
           )}
-
           {fileUrl &&
             (fileType == "image" ? (
               <Image
@@ -189,7 +188,7 @@ function FilePreview({
                 height={100}
                 className={styles.image}
               />
-            ) : fileType == "video" ? (
+            ) : (
               <video
                 key={fileUrl}
                 width="320"
@@ -200,14 +199,12 @@ function FilePreview({
                 <source src={fileUrl} type="video/mp4" />
                 Your browser does not support the video tag
               </video>
-            ) : (
-              <p>Unknown error</p>
             ))}
         </div>
 
         {"=>"}
 
-        <div className={styles.previewCtn}>
+        <div className={clsx(styles.previewCtn, styles.previewLolCtn)}>
           {!goatedImage && (
             <div className={styles.noImage}>
               {loading
@@ -217,22 +214,26 @@ function FilePreview({
                 : "press the preview button to preview the goated image/gif"}
             </div>
           )}
+
           {goatedImage && (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: "10px",
-              }}
-            >
-              <Image
-                src={goatedImage}
-                alt={"Goat preview"}
-                width={100}
-                height={100}
-                className={styles.image}
-              />
+            <div className={styles.contentWrapper}>
+              <div className={styles.imageWrapper}>
+                <div className={styles.imageGenCtn}>
+                  <GlowEffect
+                    colors={["#FFB656", "#FEE0A1"]}
+                    mode={"rotate"}
+                    blur="medium"
+                    duration={2}
+                  />
+                </div>
+                <Image
+                  src={goatedImage}
+                  alt={"Goat preview"}
+                  width={300}
+                  height={300}
+                  className={styles.generatedImage}
+                />
+              </div>
               <button
                 onClick={handleDownload}
                 style={{
