@@ -39,6 +39,14 @@ import { BorderTrail } from "@/components/border";
 
 const fuse = new Fuse(emojis, {});
 
+type T_SparkleData = {
+  id: number;
+  top: string;
+  left: string;
+  duration: number;
+  delay: number;
+}[];
+
 const VID_LIMIT = 20;
 
 function FilePreviewButton({
@@ -126,6 +134,9 @@ function FilePreview({
   loading,
   uploadPg,
   isPrincess,
+  sparkles,
+  handleSparkleComplete,
+  goatedImageCtnRef,
 }: {
   show: boolean;
   fileUrl: string | null;
@@ -134,6 +145,9 @@ function FilePreview({
   loading: boolean;
   uploadPg: number;
   isPrincess: boolean;
+  sparkles: T_SparkleData;
+  handleSparkleComplete: (id: number) => void;
+  goatedImageCtnRef: React.RefObject<HTMLDivElement | null>;
 }) {
   const handleDownload = async () => {
     if (!goatedImage) {
@@ -179,6 +193,7 @@ function FilePreview({
               selected image will be shown here
             </div>
           )}
+
           {fileUrl &&
             (fileType == "image" ? (
               <Image
@@ -188,7 +203,7 @@ function FilePreview({
                 height={100}
                 className={styles.image}
               />
-            ) : (
+            ) : fileType == "video" ? (
               <video
                 key={fileUrl}
                 width="320"
@@ -199,12 +214,35 @@ function FilePreview({
                 <source src={fileUrl} type="video/mp4" />
                 Your browser does not support the video tag
               </video>
+            ) : (
+              <p>Unknown error</p>
             ))}
         </div>
 
         {"=>"}
 
-        <div className={clsx(styles.previewCtn, styles.previewLolCtn)}>
+        <div className={styles.previewCtn} ref={goatedImageCtnRef}>
+          {goatedImage &&
+            sparkles.map(
+              ({
+                id,
+                ...props
+              }: {
+                id: number;
+                top: string;
+                left: string;
+                duration: number;
+                delay: number;
+              }) => (
+                <Sparkle
+                  key={id}
+                  direction="center"
+                  {...props}
+                  onAnimationComplete={() => handleSparkleComplete(id)}
+                />
+              )
+            )}
+
           {!goatedImage && (
             <div className={styles.noImage}>
               {loading
@@ -214,26 +252,22 @@ function FilePreview({
                 : "press the preview button to preview the goated image/gif"}
             </div>
           )}
-
           {goatedImage && (
-            <div className={styles.contentWrapper}>
-              <div className={styles.imageWrapper}>
-                <div className={styles.imageGenCtn}>
-                  <GlowEffect
-                    colors={["#FFB656", "#FEE0A1"]}
-                    mode={"rotate"}
-                    blur="medium"
-                    duration={2}
-                  />
-                </div>
-                <Image
-                  src={goatedImage}
-                  alt={"Goat preview"}
-                  width={300}
-                  height={300}
-                  className={styles.generatedImage}
-                />
-              </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "10px",
+              }}
+            >
+              <Image
+                src={goatedImage}
+                alt={"Goat preview"}
+                width={100}
+                height={100}
+                className={styles.image}
+              />
               <button
                 onClick={handleDownload}
                 style={{
@@ -287,14 +321,6 @@ export default function Home() {
   // const [duration, setDuration] = useState(0);
   // const [musicPos, setMusicPos] = useState(0);
 
-  type T_SparkleData = {
-    id: number;
-    top: string;
-    left: string;
-    duration: number;
-    delay: number;
-  }[];
-
   const onDrop = useCallback((acceptedFiles: any) => {
     const file = acceptedFiles[0];
 
@@ -318,7 +344,10 @@ export default function Home() {
   });
 
   const imgCtnRef = useRef(null);
+  const goatedImageCtnRef = useRef(null);
+
   const [sparkles, setSparkles] = useState<T_SparkleData>([]);
+  const [goatedSparkles, setGoatedSparkles] = useState<T_SparkleData>([]);
 
   const [tool, setTool] = useState("pen");
   const [lines, setLines] = useState<any>([]);
@@ -905,6 +934,12 @@ export default function Home() {
     );
   }, []);
 
+  const handleGoatedSparkleComplete = useCallback((id: any) => {
+    setGoatedSparkles((prevSparkles) =>
+      prevSparkles.filter((sparkle) => sparkle.id !== id)
+    );
+  }, []);
+
   useEffect(() => {
     if (lorePos > 0 && princessLore && imgCtnRef.current) {
       const generateSparkle = () => {
@@ -957,6 +992,50 @@ export default function Home() {
       return () => clearInterval(interval);
     }
   }, [lorePos, princessLore]);
+
+  useEffect(() => {
+    if (goatedImage && goatedImageCtnRef.current) {
+      const generateSparkle = () => {
+        if (!goatedImageCtnRef.current) return;
+
+        const { offsetWidth, offsetHeight } = goatedImageCtnRef.current;
+        const side = Math.floor(Math.random() * 4);
+
+        let spawnX, spawnY;
+
+        if (side === 0) {
+          spawnX = Math.random() * offsetWidth;
+          spawnY = -5;
+        } else if (side === 1) {
+          spawnX = offsetWidth + 5;
+          spawnY = Math.random() * offsetHeight;
+        } else if (side === 2) {
+          spawnX = Math.random() * offsetWidth;
+          spawnY = offsetHeight + 5;
+        } else {
+          spawnX = -5;
+          spawnY = Math.random() * offsetHeight;
+        }
+
+        const newSparkle = {
+          id: Date.now() + Math.random(),
+          top: `${spawnY}px`,
+          left: `${spawnX}px`,
+          duration: lorePos === 12 ? Math.random() : Math.random() + 2.7,
+          delay: 0,
+        };
+
+        setGoatedSparkles((prevSparkles) => [...prevSparkles, newSparkle]);
+      };
+
+      const interval = setInterval(() => {
+        generateSparkle();
+        generateSparkle();
+      }, 5);
+
+      return () => clearInterval(interval);
+    }
+  }, [goatedImage]);
 
   return (
     <div
@@ -1598,6 +1677,9 @@ export default function Home() {
         loading={loading}
         uploadPg={uploadPg}
         isPrincess={isPrincess}
+        sparkles={goatedSparkles}
+        handleSparkleComplete={handleGoatedSparkleComplete}
+        goatedImageCtnRef={goatedImageCtnRef}
       />
 
       {fileUrl && (
@@ -1918,6 +2000,8 @@ export default function Home() {
         loading={loading}
         uploadPg={uploadPg}
         isPrincess={isPrincess}
+        sparkles={goatedSparkles}
+        handleSparkleComplete={handleGoatedSparkleComplete}
       />
 
       {file && (
