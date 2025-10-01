@@ -381,6 +381,7 @@ export default function Home() {
   const [file, setFile] = useState<File | null>(null);
   const [goatedImage, setGoatedImage] = useState<string | null>(null);
 
+  const [madeWithPrincessMode, setMadeWithPrincessMode] = useState(false);
   const [quality, setQuality] = useState("20");
   const [loops, setLoops] = useState("3");
   const [subsample, setSubsample] = useState("2");
@@ -916,6 +917,8 @@ export default function Home() {
     formData.append("g", color.g.toString());
     formData.append("b", color.b.toString());
     formData.append("a", Math.round(color.a * 255).toString());
+
+    formData.append("madeWithPrincessMode", madeWithPrincessMode.toString());
 
     formData.append("quality", quality);
     formData.append("loops", loops);
@@ -1737,6 +1740,25 @@ export default function Home() {
                   step="1"
                   defaultValue="10"
                   onChange={(e) => setFps(e.target.value)}
+                />
+              </div>
+            </>
+          )}
+
+          {isPrincess && (
+            <>
+              <p className={styles.bottombartext}>
+                "made with princess mode" footer: on = add, off = remove
+              </p>
+              <div className={styles.bottombaritem}>
+                {madeWithPrincessMode ? "on" : "off"}
+                <input
+                  style={{
+                    cursor: isPrincess ? "none" : "default",
+                  }}
+                  type="checkbox"
+                  checked={madeWithPrincessMode}
+                  onChange={(e) => setMadeWithPrincessMode(e.target.checked)}
                 />
               </div>
             </>
