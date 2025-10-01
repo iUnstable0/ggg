@@ -129,7 +129,7 @@
 .emojiImgCtn {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  /* align-items: center; */
   justify-content: flex-start;
 
   gap: 8px;
@@ -387,4 +387,17 @@
   left: 0;
   width: 100%;
   height: 100%;
+}
+
+.emojiGridCtn {
+  /* grid from left to right top to bottom */
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-auto-rows: 25px; /* Fixed height for each row */
+  gap: 8px;
+  /* with overflow support */
+  overflow: auto;
+
+  width: 200px;
+  height: 300px;
 }

@@ -343,9 +343,6 @@ export default function Home() {
     interrupt: true,
   });
 
-  // const [duration, setDuration] = useState(0);
-  // const [musicPos, setMusicPos] = useState(0);
-
   const onDrop = useCallback((acceptedFiles: any) => {
     const file = acceptedFiles[0];
 
@@ -374,6 +371,8 @@ export default function Home() {
   const [sparkles, setSparkles] = useState<T_SparkleData>([]);
   const [goatedSparkles, setGoatedSparkles] = useState<T_SparkleData>([]);
 
+  const [gridView, setGridView] = useState(false);
+
   const [tool, setTool] = useState("pen");
   const [lines, setLines] = useState<any>([]);
   const isDrawing = useRef(false);
@@ -382,6 +381,8 @@ export default function Home() {
   const [goatedImage, setGoatedImage] = useState<string | null>(null);
 
   const [madeWithPrincessMode, setMadeWithPrincessMode] = useState(false);
+  const [squishText, setSquishText] = useState(false);
+
   const [quality, setQuality] = useState("20");
   const [loops, setLoops] = useState("3");
   const [subsample, setSubsample] = useState("2");
@@ -919,6 +920,8 @@ export default function Home() {
     formData.append("a", Math.round(color.a * 255).toString());
 
     formData.append("madeWithPrincessMode", madeWithPrincessMode.toString());
+
+    formData.append("squishText", squishText.toString());
 
     formData.append("quality", quality);
     formData.append("loops", loops);
@@ -1765,6 +1768,23 @@ export default function Home() {
           )}
 
           <p className={styles.bottombartext}>
+            if text exceeds width, should it be squished? on = squished until
+            specific threshold then cut to new line, off = cut to new line
+            immediately no squishing
+          </p>
+          <div className={styles.bottombaritem}>
+            {squishText ? "on" : "off"}
+            <input
+              style={{
+                cursor: isPrincess ? "none" : "default",
+              }}
+              type="checkbox"
+              checked={squishText}
+              onChange={(e) => setSquishText(e.target.checked)}
+            />
+          </div>
+
+          <p className={styles.bottombartext}>
             what should each compression quality be?
           </p>
           <div className={styles.bottombaritem}>
@@ -1972,60 +1992,93 @@ export default function Home() {
               />
               <p>max 100 results to prevent lag</p>
               <p>click to copy the emoji name!</p>
+              {/* a toggle say either grid view or list view */}
+              <div className={styles.bottombaritem}>
+                {gridView
+                  ? "current view: grid view (grid view is better)"
+                  : "current view: list view (grid view is better)"}
+                <input
+                  type="checkbox"
+                  checked={gridView}
+                  onChange={(e) => setGridView(e.target.checked)}
+                />
+              </div>
             </div>
 
-            <div className={styles.emojiCtn}>
-              <AnimatePresence mode="popLayout">
-                {searchResults.map((r) => (
-                  <motion.button
-                    key={r}
-                    initial={{
-                      opacity: 0,
-                    }}
-                    animate={{
-                      opacity: 1,
-                    }}
-                    exit={{
-                      opacity: 0,
-                    }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 350,
-                      damping: 40,
-                      opacity: {
-                        ease: "linear",
-                        duration: 0.2,
-                      },
-                    }}
-                    style={{
-                      cursor: isPrincess ? "none" : "default",
-                    }}
+            {!gridView && (
+              <div className={styles.emojiCtn}>
+                <AnimatePresence mode="popLayout">
+                  {searchResults.map((r) => (
+                    <motion.button
+                      key={r}
+                      initial={{
+                        opacity: 0,
+                      }}
+                      animate={{
+                        opacity: 1,
+                      }}
+                      exit={{
+                        opacity: 0,
+                      }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 350,
+                        damping: 40,
+                        opacity: {
+                          ease: "linear",
+                          duration: 0.2,
+                        },
+                      }}
+                      style={{
+                        cursor: isPrincess ? "none" : "default",
+                      }}
+                      onClick={() => {
+                        const txt = `:${r}:`;
+                        navigator.clipboard.writeText(txt);
+                        // toast.success("Copied to clipboard!", {
+                        //   id: "copyclipboard",
+                        // });
+                        console.log("i miss my friends bruh");
+                        toast.success("Copied to clipboard!");
+                      }}
+                      className={styles.emojiImgCtn}
+                      layout
+                    >
+                      <Image
+                        src={`/emojis/${r}.png`}
+                        alt={""}
+                        className={styles.emojiImg}
+                        width={25}
+                        height={25}
+                        loading={"lazy"}
+                        decoding={"async"}
+                      />
+                      {r}
+                    </motion.button>
+                  ))}
+                </AnimatePresence>
+              </div>
+            )}
+
+            {gridView && (
+              <div className={styles.emojiGridCtn}>
+                {searchResults.map((r, index) => (
+                  <Image
+                    src={`/emojis/${r}.png`}
+                    alt={""}
+                    width={25}
+                    height={25}
                     onClick={() => {
                       const txt = `:${r}:`;
                       navigator.clipboard.writeText(txt);
-                      // toast.success("Copied to clipboard!", {
-                      //   id: "copyclipboard",
-                      // });
-                      console.log("i miss my friends bruh");
-                      toast.success("Copied to clipboard!");
+                      toast.success("Copied to clipboard");
                     }}
-                    className={styles.emojiImgCtn}
-                    layout
-                  >
-                    <Image
-                      src={`/emojis/${r}.png`}
-                      alt={""}
-                      className={styles.emojiImg}
-                      width={25}
-                      height={25}
-                      loading={"lazy"}
-                      decoding={"async"}
-                    />
-                    {r}
-                  </motion.button>
+                    loading={"lazy"}
+                    decoding={"async"}
+                  />
                 ))}
-              </AnimatePresence>
-            </div>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -2052,6 +2105,7 @@ export default function Home() {
         isPrincess={isPrincess}
         sparkles={goatedSparkles}
         handleSparkleComplete={handleGoatedSparkleComplete}
+        goatedImageCtnRef={goatedImageCtnRef}
       />
 
       {file && (
