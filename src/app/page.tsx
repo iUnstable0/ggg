@@ -383,6 +383,7 @@ export default function Home() {
   const [madeWithPrincessMode, setMadeWithPrincessMode] = useState(false);
   const [squishText, setSquishText] = useState(false);
   const [textPlacement, setTextPlacement] = useState("topleft");
+  const [emojiGlows, setEmojiGlows] = useState(false);
 
   const [quality, setQuality] = useState("20");
   const [loops, setLoops] = useState("3");
@@ -924,6 +925,8 @@ export default function Home() {
 
     formData.append("squishText", squishText.toString());
     formData.append("textPlacement", textPlacement);
+
+    formData.append("emojiGlows", emojiGlows.toString());
 
     formData.append("quality", quality);
     formData.append("loops", loops);
@@ -1988,6 +1991,21 @@ export default function Home() {
               }}
               placeholder={"Hello, My Goat :red-heart:"}
               onChange={(e) => setMessage(e.target.value)}
+            />
+          </div>
+
+          <p className={styles.bottombartext}>
+            emoji glows? on = glows, off = no glow
+          </p>
+          <div className={styles.bottombaritem}>
+            {emojiGlows ? "on" : "off"}
+            <input
+              style={{
+                cursor: isPrincess ? "none" : "default",
+              }}
+              type="checkbox"
+              checked={emojiGlows}
+              onChange={(e) => setEmojiGlows(e.target.checked)}
             />
           </div>
 
