@@ -382,6 +382,7 @@ export default function Home() {
 
   const [madeWithPrincessMode, setMadeWithPrincessMode] = useState(false);
   const [squishText, setSquishText] = useState(false);
+  const [textPlacement, setTextPlacement] = useState("topleft");
 
   const [quality, setQuality] = useState("20");
   const [loops, setLoops] = useState("3");
@@ -922,6 +923,7 @@ export default function Home() {
     formData.append("madeWithPrincessMode", madeWithPrincessMode.toString());
 
     formData.append("squishText", squishText.toString());
+    formData.append("textPlacement", textPlacement);
 
     formData.append("quality", quality);
     formData.append("loops", loops);
@@ -1954,6 +1956,22 @@ export default function Home() {
               defaultValue="1"
               onChange={(e) => setFont(e.target.value)}
             />
+          </div>
+
+          {/* text placement (default top left) options are tl, tr, bl, br */}
+          <p className={styles.bottombartext}>
+            text placement (default topleft)
+          </p>
+          <div className={styles.bottombaritem}>
+            <select
+              value={textPlacement}
+              onChange={(e) => setTextPlacement(e.target.value)}
+            >
+              <option value="topleft">topleft</option>
+              <option value="topright">topright</option>
+              <option value="bottomleft">bottomleft</option>
+              <option value="bottomright">bottomright</option>
+            </select>
           </div>
 
           <p className={styles.bottombartext}>Text color</p>
