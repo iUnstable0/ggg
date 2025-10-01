@@ -384,6 +384,7 @@ export default function Home() {
   const [squishText, setSquishText] = useState(false);
   const [textPlacement, setTextPlacement] = useState("topleft");
   const [emojiGlows, setEmojiGlows] = useState(false);
+  const [emojiGlowLevel, setEmojiGlowLevel] = useState("10");
 
   const [quality, setQuality] = useState("20");
   const [loops, setLoops] = useState("3");
@@ -937,6 +938,7 @@ export default function Home() {
     formData.append("textPlacement", textPlacement);
 
     formData.append("emojiGlows", emojiGlows.toString());
+    formData.append("emojiGlowLevel", emojiGlowLevel);
 
     formData.append("quality", quality);
     formData.append("loops", loops);
@@ -2017,6 +2019,22 @@ export default function Home() {
               type="checkbox"
               checked={emojiGlows}
               onChange={(e) => setEmojiGlows(e.target.checked)}
+            />
+          </div>
+
+          <p className={styles.bottombartext}>emoji glow level?</p>
+          <div className={styles.bottombaritem}>
+            <SlidingNumber value={parseFloat(emojiGlowLevel)} />
+            <input
+              style={{
+                cursor: isPrincess ? "none" : "default",
+              }}
+              type="range"
+              min="0"
+              max="20"
+              step="1"
+              defaultValue="10"
+              onChange={(e) => setEmojiGlowLevel(e.target.value)}
             />
           </div>
 
