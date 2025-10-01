@@ -342,6 +342,16 @@ export default function Home() {
   const [playMuhehe] = useSound("/sounds/muhehe.mp3", {
     interrupt: true,
   });
+  const [playPinkify] = useSound("/sounds/pinkify.mp3", {
+    interrupt: true,
+    onplay: () => {
+      setPrevVol(volume);
+      setVolume(0.25);
+    },
+    onend: () => {
+      setVolume(prevVol);
+    },
+  });
 
   const onDrop = useCallback((acceptedFiles: any) => {
     const file = acceptedFiles[0];
@@ -381,6 +391,10 @@ export default function Home() {
   const [goatedImage, setGoatedImage] = useState<string | null>(null);
 
   const [madeWithPrincessMode, setMadeWithPrincessMode] = useState(false);
+  const [pinkify, setPinkify] = useState(false);
+
+  const [pinkifyContract, setPinkifyContract] = useState(false);
+
   const [squishText, setSquishText] = useState(false);
   const [textPlacement, setTextPlacement] = useState("topleft");
   const [emojiGlows, setEmojiGlows] = useState(false);
@@ -452,6 +466,7 @@ export default function Home() {
   };
 
   const [volume, setVolume] = useState(0.5);
+  const [prevVol, setPrevVol] = useState(0.5);
   const [princessPause, setPrincessPause] = useState(false);
 
   const [royalOptions, setRoyalOptions] = useState(false);
@@ -1679,6 +1694,114 @@ export default function Home() {
         </div>
       )}
 
+      {pinkifyContract && (
+        <div className={styles.princessConfirmation}>
+          <div className={styles.princessCtn}>
+            <div className={styles.princessTitle}>
+              <Image
+                src={"/emojis/dizzy.png"}
+                alt={"royal emoji"}
+                width={30}
+                height={30}
+              />
+              <Image
+                src={"/emojis/gem-stone.png"}
+                alt={"royal emoji"}
+                width={30}
+                height={30}
+              />
+              <h1>Royal Confirmation</h1>
+              <Image
+                src={"/emojis/sparkles.png"}
+                alt={"royal emoji"}
+                width={30}
+                height={30}
+              />
+              <Image
+                src={"/emojis/sparkling-heart.png"}
+                alt={"royal emoji"}
+                width={30}
+                height={30}
+              />
+            </div>
+            Are you sure you want to enable pinkify?
+            <span>Your signature:</span>
+            <div
+              className={styles.sigBox}
+              style={{
+                cursor: isPrincess ? "none" : "default",
+              }}
+            >
+              <Stage
+                width={250}
+                height={75}
+                onMouseDown={handleMouseDown}
+                onMousemove={handleMouseMove}
+                onMouseup={handleMouseUp}
+                onTouchStart={handleMouseDown}
+                onTouchMove={handleMouseMove}
+                onTouchEnd={handleMouseUp}
+              >
+                <Layer>
+                  {/*<Text text="Just start drawing" x={5} y={30} />*/}
+                  {lines.map((line: any, i: any) => (
+                    <Line
+                      key={i}
+                      points={line.points}
+                      stroke="#ff4646"
+                      strokeWidth={5}
+                      tension={0.5}
+                      lineCap="round"
+                      lineJoin="round"
+                      globalCompositeOperation={
+                        line.tool === "eraser"
+                          ? "destination-out"
+                          : "source-over"
+                      }
+                    />
+                  ))}
+                </Layer>
+              </Stage>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                gap: "32px",
+              }}
+            >
+              <button
+                style={{
+                  cursor: isPrincess ? "none" : "default",
+                }}
+                onClick={() => {
+                  if (lines.length === 0) {
+                    return toast.error("YOU MUST SIGN");
+                  }
+                  setLines([]);
+                  setPinkifyContract(false);
+                  setPinkify(true);
+                  playPinkify();
+                }}
+              >
+                Confirm
+              </button>
+              <button
+                style={{
+                  cursor: isPrincess ? "none" : "default",
+                }}
+                onClick={() => {
+                  setLines([]);
+                  playMuhehe();
+                  setPinkifyContract(false);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className={styles.header}>
         <b>The Goodnight Goat Generator</b>
       </div>
@@ -1780,6 +1903,19 @@ export default function Home() {
                   type="checkbox"
                   checked={madeWithPrincessMode}
                   onChange={(e) => setMadeWithPrincessMode(e.target.checked)}
+                />
+              </div>
+
+              <p className={styles.bottombartext}>pinkify</p>
+              <div className={styles.bottombaritem}>
+                {pinkify ? "on" : "off"}
+                <input
+                  style={{
+                    cursor: isPrincess ? "none" : "default",
+                  }}
+                  type="checkbox"
+                  checked={pinkify}
+                  onChange={(e) => setPinkifyContract(true)}
                 />
               </div>
             </>
