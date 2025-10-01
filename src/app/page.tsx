@@ -697,7 +697,7 @@ export default function Home() {
   }, [fileUrl]);
 
   useEffect(() => {
-    const [play, stop] = queue[musicSelection];
+    const [play, stop] = queue[musicSelection] as Array<Function>;
 
     // if music not playing
     if (princessPlaying === -1) {
@@ -712,7 +712,7 @@ export default function Home() {
       }
 
       if (princessPlaying !== musicSelection) {
-        queue[princessPlaying][1]();
+        (queue[princessPlaying][1] as Function)();
         // setPrincessPlaying(musicSelection);
         play();
       }
@@ -1479,10 +1479,10 @@ export default function Home() {
                   onClick={() => {
                     // 	resume pr pause the song
                     if (princessPause) {
-                      queue[musicSelection][0]();
+                      (queue[musicSelection][0] as Function)();
                       setPrincessPause(false);
                     } else {
-                      queue[princessPlaying][2]();
+                      (queue[princessPlaying][2] as Function)();
                       setPrincessPause(true);
                       // setPrincessPlaying(-1);
                     }
