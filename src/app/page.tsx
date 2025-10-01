@@ -619,12 +619,22 @@ export default function Home() {
   }, [lorePos, princessLore]);
 
   const queue = [
-    [playPrincess, stopPrincess, pausePrincess],
-    [playWhirl, stopWhirl, pauseWhirl],
-    [playRoyal1, stopRoyal1, pauseRoyal1],
-    [playRoyal2, stopRoyal2, pauseRoyal2],
-    [playRoyal3, stopRoyal3, pauseRoyal3],
-    [playChristmas, stopChristmas, pauseChristmas],
+    [
+      playPrincess,
+      stopPrincess,
+      pausePrincess,
+      "“Goodnight Princess” by Jaycis",
+    ],
+    [playWhirl, stopWhirl, pauseWhirl, "Whirl"],
+    [playRoyal1, stopRoyal1, pauseRoyal1, "Royal 1"],
+    [playRoyal2, stopRoyal2, pauseRoyal2, "Royal 2"],
+    [playRoyal3, stopRoyal3, pauseRoyal3, "Royal 3"],
+    [
+      playChristmas,
+      stopChristmas,
+      pauseChristmas,
+      "Roblox work at pizza place christmas",
+    ],
   ];
 
   const handleMouseDown = (e: any) => {
@@ -1429,6 +1439,7 @@ export default function Home() {
           <div className={styles.musicbar}>
             <div>
               <div>Royal FM 443 + 732 KHz</div>
+              <div>{queue[musicSelection][3] as string}</div>
               {/* {duration} */}
               <button
                 onClick={() => {
