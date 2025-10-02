@@ -1475,76 +1475,89 @@ export default function Home() {
 
       {isPrincess && (
         <div className={styles.princessmusicselection}>
-          <div className={styles.musicbar}>
-            <div>
-              <div>Royal FM 443 + 732 KHz</div>
-              <div>{queue[musicSelection][3] as string}</div>
-              {/* {duration} */}
-              <button
-                onClick={() => {
-                  setRoyalOptions(!royalOptions);
-                }}
-              >
-                click to toggle options
-              </button>
-            </div>
-            {queue.map((song, idx) => (
-              <button
-                style={{
-                  cursor: isPrincess ? "defaultio" : "default",
-                }}
-                key={idx}
-                className={clsx(
-                  styles.selection,
-                  musicSelection === idx && styles.selected
-                )}
-                onClick={(e) => {
-                  setMusicSelection(idx);
-                }}
-              >
-                {idx}
-              </button>
-            ))}
+          <div className={styles.glowCtn}>
+            <GlowEffect
+              colors={["#0894FF", "#C959DD", "#FF2E54", "#FF9004"]}
+              mode="colorShift"
+              blur="medium"
+              duration={4}
+            />
           </div>
 
-          {royalOptions && (
+          <div className={styles.musicbarCtn}>
             <div className={styles.musicbar}>
-              <div
-                style={{
-                  padding: "8px 16px",
-                }}
-              >
+              <div>
+                <div>Royal FM 443 + 732 KHz</div>
+                <div>{queue[musicSelection][3] as string}</div>
+                {/* {duration} */}
                 <button
                   onClick={() => {
-                    // 	resume pr pause the song
-                    if (princessPause) {
-                      (queue[musicSelection][0] as Function)();
-                      setPrincessPause(false);
-                    } else {
-                      (queue[princessPlaying][2] as Function)();
-                      setPrincessPause(true);
-                      // setPrincessPlaying(-1);
-                    }
+                    setRoyalOptions(!royalOptions);
                   }}
                 >
-                  {princessPause ? "Play" : "Stop"}
+                  click to toggle options
                 </button>
               </div>
-
-              <label style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                Volume
-                <input
-                  type="range"
-                  min={0}
-                  max={1}
-                  step={0.01}
-                  value={volume}
-                  onChange={(e) => setVolume(Number(e.target.value))}
-                />
-                <span>{Math.round(volume * 100)}%</span>
-              </label>
+              {queue.map((song, idx) => (
+                <button
+                  style={{
+                    cursor: isPrincess ? "defaultio" : "default",
+                  }}
+                  key={idx}
+                  className={clsx(
+                    styles.selection,
+                    musicSelection === idx && styles.selected
+                  )}
+                  onClick={(e) => {
+                    setMusicSelection(idx);
+                  }}
+                >
+                  {idx}
+                </button>
+              ))}
             </div>
-          )}
+
+            {royalOptions && (
+              <div className={styles.musicbar}>
+                <div
+                  style={{
+                    padding: "8px 16px",
+                  }}
+                >
+                  <button
+                    onClick={() => {
+                      // 	resume pr pause the song
+                      if (princessPause) {
+                        (queue[musicSelection][0] as Function)();
+                        setPrincessPause(false);
+                      } else {
+                        (queue[princessPlaying][2] as Function)();
+                        setPrincessPause(true);
+                        // setPrincessPlaying(-1);
+                      }
+                    }}
+                  >
+                    {princessPause ? "Play" : "Stop"}
+                  </button>
+                </div>
+
+                <label
+                  style={{ display: "flex", gap: 8, alignItems: "center" }}
+                >
+                  Volume
+                  <input
+                    type="range"
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    value={volume}
+                    onChange={(e) => setVolume(Number(e.target.value))}
+                  />
+                  <span>{Math.round(volume * 100)}%</span>
+                </label>
+              </div>
+            )}
+          </div>
         </div>
       )}
 

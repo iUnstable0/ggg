@@ -177,18 +177,14 @@
 }
 
 .princessmusicselection {
-  background: #ff8ef8;
-  padding: 8px;
-
-  border: 1px solid #ccc;
-  border-radius: 4px;
-
   position: fixed;
   bottom: 20px;
 
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  z-index: 100;
 
   .selection {
     margin-left: 8px;
@@ -202,6 +198,23 @@
 
   .musicbar {
     display: flex;
+  }
+
+  .musicbarCtn {
+    /* background: #ff8ef8; */
+    padding: 8px;
+
+    border-radius: 4px;
+
+    background: #ff8ef8;
+  }
+  .glowCtn {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
   }
 }
 
