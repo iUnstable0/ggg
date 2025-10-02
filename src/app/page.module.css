@@ -426,3 +426,63 @@
   background: #ff8ef8;
   padding: 8px;
 }
+
+.secretCtn {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  /* background: #ff0000bf; */
+
+  width: 100%;
+  height: 100%;
+
+  padding: 8px;
+  z-index: 100;
+}
+
+.secretCtnBtn {
+  width: 30%;
+  height: 10%;
+
+  position: absolute;
+  bottom: 40px;
+  right: 140px;
+
+  cursor: pointer;
+
+  /* background: #ffffff5b; */
+}
+
+.orangeJuiceCtn {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  padding: 32px;
+
+  z-index: 100;
+
+  backdrop-filter: blur(18px);
+}
+
+.orangeJuice {
+  width: 85%;
+  height: 85%;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  /* background: #ff8ef8; */
+}
+
+.orangeJuiceImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}

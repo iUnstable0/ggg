@@ -346,6 +346,12 @@ export default function Home() {
   const [playPinkify] = useSound("/sounds/pinkify.mp3", {
     interrupt: true,
   });
+  const [playPickup] = useSound("/sounds/paperpick.mp3", {
+    interrupt: true,
+  });
+  const [playPutaway] = useSound("/sounds/paperputaway.mp3", {
+    interrupt: true,
+  });
 
   const onDrop = useCallback((acceptedFiles: any) => {
     const file = acceptedFiles[0];
@@ -431,6 +437,7 @@ export default function Home() {
   const [isPrincess, setIsPrincess] = useState<boolean>(false);
   const [princessConfirmation, setPrincessConfirmation] =
     useState<boolean>(false);
+  const [showOrangeJuice, setShowOrangeJuice] = useState<boolean>(false);
 
   const [princessPlaying, setPrincessPlaying] = useState<number>(-1);
   const [firstPrincess, setFirstPrincess] = useState<boolean>(true);
@@ -1006,6 +1013,14 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    if (showOrangeJuice) {
+      playPickup();
+    } else {
+      playPutaway();
+    }
+  }, [showOrangeJuice]);
+
+  useEffect(() => {
     if (lorePos > 0 && princessLore && imgCtnRef.current) {
       const generateSparkle = () => {
         if (!imgCtnRef.current) return;
@@ -1313,7 +1328,8 @@ export default function Home() {
                           transform: "scale(0.9)",
                         }}
                         disabled={lorePos <= 1}
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           playBack();
 
                           setLoreDirection("prev");
@@ -1361,7 +1377,9 @@ export default function Home() {
                         whileTap={{
                           transform: "scale(0.9)",
                         }}
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
+
                           if (lorePos === 14) {
                             setPrincessLore(false);
                             setIsPrincess(true);
@@ -1421,6 +1439,19 @@ export default function Home() {
                         </motion.div>
                       )}
                     </AnimatePresence>
+
+                    {lorePos === 6 && (
+                      <div className={styles.secretCtn}>
+                        <button
+                          className={styles.secretCtnBtn}
+                          onClick={() => {
+                            // if (confirm("Go to page 84?")) {
+                            setShowOrangeJuice(true);
+                            // }
+                          }}
+                        />
+                      </div>
+                    )}
 
                     {sparkles.map(
                       ({
@@ -1493,7 +1524,6 @@ export default function Home() {
                 "#FF9004",
               ]}
               mode="rotate"
-              l
               blur="medium"
               duration={2}
             />
@@ -1572,6 +1602,25 @@ export default function Home() {
                 </label>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {showOrangeJuice && (
+        <div
+          className={styles.orangeJuiceCtn}
+          onClick={() => {
+            setShowOrangeJuice(false);
+          }}
+        >
+          <div className={styles.orangeJuice}>
+            <Image
+              src={"/orange.png"}
+              alt={"royal emoji"}
+              width={1200}
+              height={1200}
+              className={styles.orangeJuiceImg}
+            />
           </div>
         </div>
       )}
