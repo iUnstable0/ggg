@@ -1,6 +1,13 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef, useCallback } from "react";
+import {
+  useState,
+  useMemo,
+  useEffect,
+  useRef,
+  useCallback,
+  RefObject,
+} from "react";
 
 import Image from "next/image";
 
@@ -377,9 +384,17 @@ export default function Home() {
 
   const imgCtnRef = useRef(null);
   const goatedImageCtnRef = useRef(null);
+
+  const orangeJuiceImageRef = useRef<HTMLDivElement>(null);
+  const orangeJuiceContainerRef = useRef<HTMLDivElement>(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [sparkles, setSparkles] = useState<T_SparkleData>([]);
   const [goatedSparkles, setGoatedSparkles] = useState<T_SparkleData>([]);
+  const [orangeJuiceSparkles, setOrangeJuiceSparkles] = useState<T_SparkleData>(
+    []
+  );
 
   const [gridView, setGridView] = useState(false);
 
@@ -1012,6 +1027,12 @@ export default function Home() {
     );
   }, []);
 
+  const handleOrangeJuiceSparkleComplete = useCallback((id: any) => {
+    setOrangeJuiceSparkles((prevSparkles) =>
+      prevSparkles.filter((sparkle) => sparkle.id !== id)
+    );
+  }, []);
+
   useEffect(() => {
     if (showOrangeJuice) {
       playPickup();
@@ -1116,6 +1137,51 @@ export default function Home() {
       return () => clearInterval(interval);
     }
   }, [goatedImage]);
+
+  useEffect(() => {
+    if (showOrangeJuice && orangeJuiceImageRef.current) {
+      const generateSparkle = () => {
+        if (!orangeJuiceImageRef.current) return;
+
+        const { offsetWidth, offsetHeight, offsetLeft, offsetTop } =
+          orangeJuiceImageRef.current;
+
+        const side = Math.floor(Math.random() * 4);
+        let spawnX, spawnY;
+
+        if (side === 0) {
+          spawnX = offsetLeft + Math.random() * offsetWidth;
+          spawnY = offsetTop - 5;
+        } else if (side === 1) {
+          spawnX = offsetLeft + offsetWidth + 5;
+          spawnY = offsetTop + Math.random() * offsetHeight;
+        } else if (side === 2) {
+          spawnX = offsetLeft + Math.random() * offsetWidth;
+          spawnY = offsetTop + offsetHeight + 5;
+        } else {
+          spawnX = offsetLeft - 5;
+          spawnY = offsetTop + Math.random() * offsetHeight;
+        }
+
+        const newSparkle = {
+          id: Date.now() + Math.random(),
+          top: `${spawnY}px`,
+          left: `${spawnX}px`,
+          duration: lorePos === 12 ? Math.random() : Math.random() + 2.7,
+          delay: 0,
+        };
+
+        setOrangeJuiceSparkles((prevSparkles) => [...prevSparkles, newSparkle]);
+      };
+
+      const interval = setInterval(() => {
+        generateSparkle();
+        generateSparkle();
+      }, 5);
+
+      return () => clearInterval(interval);
+    }
+  }, [showOrangeJuice]);
 
   return (
     <div
@@ -1613,14 +1679,41 @@ export default function Home() {
             setShowOrangeJuice(false);
           }}
         >
-          <div className={styles.orangeJuice}>
-            <Image
-              src={"/orange.png"}
-              alt={"royal emoji"}
-              width={1200}
-              height={1200}
-              className={styles.orangeJuiceImg}
-            />
+          <div className={styles.orangeJuice} ref={orangeJuiceContainerRef}>
+            {orangeJuiceSparkles.map(
+              ({
+                id,
+                ...props
+              }: {
+                id: number;
+                top: string;
+                left: string;
+                duration: number;
+                delay: number;
+              }) => (
+                <Sparkle
+                  key={id}
+                  direction="center"
+                  {...props}
+                  onAnimationComplete={() =>
+                    handleOrangeJuiceSparkleComplete(id)
+                  }
+                />
+              )
+            )}
+
+            <div
+              className={styles.orangeJuiceImageWrapper}
+              ref={orangeJuiceImageRef as RefObject<HTMLDivElement>}
+            >
+              <Image
+                src={"/orange.png"}
+                alt={"royal emoji"}
+                width={1200}
+                height={1200}
+                className={styles.orangeJuiceImg}
+              />
+            </div>
           </div>
         </div>
       )}

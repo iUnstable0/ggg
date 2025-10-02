@@ -457,32 +457,39 @@
 
 .orangeJuiceCtn {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-
-  padding: 32px;
-
-  z-index: 100;
-
-  backdrop-filter: blur(18px);
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.75);
+  cursor: pointer;
+  overflow-y: auto;
 }
 
 .orangeJuice {
-  width: 85%;
-  height: 85%;
+  position: relative;
+  cursor: default;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+.orangeJuiceImageWrapper {
+  position: relative;
+  display: block;
+  line-height: 0;
 
-  /* background: #ff8ef8; */
+  max-width: 750px;
+
+  width: 90vw;
+  max-height: 85vh;
 }
 
 .orangeJuiceImg {
-  width: 100%;
-  height: 100%;
+  width: 100% !important;
+  height: auto !important;
   object-fit: contain;
+  max-height: 100%;
 }
