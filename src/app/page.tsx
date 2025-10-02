@@ -68,7 +68,7 @@ function FilePreviewButton({
         onClick={handlePreview}
         disabled={loading}
         style={{
-          cursor: isPrincess ? "none" : "default",
+          cursor: isPrincess ? "defaultio" : "default",
           background: "#757575",
           padding: "4px",
         }}
@@ -105,7 +105,7 @@ function FileSelection({
       )}
       <input
         style={{
-          cursor: isPrincess ? "none" : "default",
+          cursor: isPrincess ? "defaultio" : "default",
         }}
         type={"file"}
         accept={"image/*,video/*"}
@@ -119,7 +119,7 @@ function FileSelection({
         htmlFor={"img"}
         className={styles.chooseFile}
         style={{
-          cursor: isPrincess ? "none" : "default",
+          cursor: isPrincess ? "defaultio" : "default",
         }}
       >
         click here to choose file
@@ -296,7 +296,7 @@ function FilePreview({
               {/* <button
                 onClick={handleDownload}
                 style={{
-                  cursor: isPrincess ? "none" : "default",
+                  cursor: isPrincess ? "defaultio" : "default",
                   background: "#757575",
                   padding: "4px",
                 }}
@@ -344,13 +344,6 @@ export default function Home() {
   });
   const [playPinkify] = useSound("/sounds/pinkify.mp3", {
     interrupt: true,
-    onplay: () => {
-      setPrevVol(volume);
-      setVolume(0.25);
-    },
-    onend: () => {
-      setVolume(prevVol);
-    },
   });
 
   const onDrop = useCallback((acceptedFiles: any) => {
@@ -395,7 +388,9 @@ export default function Home() {
 
   const [pinkifyContract, setPinkifyContract] = useState(false);
 
-  const [squishText, setSquishText] = useState(false);
+  const [squishText, setSquishText] = useState(true);
+  const [squishImg, setSquishImg] = useState(true);
+
   const [textPlacement, setTextPlacement] = useState("topleft");
   const [emojiGlows, setEmojiGlows] = useState(false);
   const [emojiGlowLevel, setEmojiGlowLevel] = useState("10");
@@ -447,6 +442,8 @@ export default function Home() {
     y: 0,
   });
 
+  const [royalBlossom, setRoyalBlossom] = useState(true);
+
   const loreImgVariants = {
     animate: {
       transform: "scale(1)",
@@ -466,7 +463,7 @@ export default function Home() {
   };
 
   const [volume, setVolume] = useState(0.5);
-  const [prevVol, setPrevVol] = useState(0.5);
+  // const [prevVol, setPrevVol] = useState(0.5);
   const [princessPause, setPrincessPause] = useState(false);
 
   const [royalOptions, setRoyalOptions] = useState(false);
@@ -950,10 +947,13 @@ export default function Home() {
     formData.append("madeWithPrincessMode", madeWithPrincessMode.toString());
 
     formData.append("squishText", squishText.toString());
+    formData.append("squishImg", squishImg.toString());
     formData.append("textPlacement", textPlacement);
 
     formData.append("emojiGlows", emojiGlows.toString());
     formData.append("emojiGlowLevel", emojiGlowLevel);
+
+    formData.append("pinkify", pinkify.toString());
 
     formData.append("quality", quality);
     formData.append("loops", loops);
@@ -1105,7 +1105,7 @@ export default function Home() {
     <div
       className={styles.page}
       style={{
-        cursor: isPrincess ? "none" : "default",
+        cursor: isPrincess ? "defaultio" : "default",
       }}
       {...getRootProps()}
     >
@@ -1113,7 +1113,7 @@ export default function Home() {
       <input {...getInputProps()} />
       {/*</div>*/}
 
-      {isPrincess && snowflakes && (
+      {isPrincess && snowflakes && royalBlossom && (
         <div className={styles.snowDiv}>
           l
           <Snowfall
@@ -1452,6 +1452,28 @@ export default function Home() {
       {isPrincess && <Cursor position={position} />}
 
       {isPrincess && (
+        <div className={styles.princesstoggleflower}>
+          <button
+            onClick={() => {
+              if (!royalBlossom) {
+                // setPrevVol(volume);
+                setVolume(0.15);
+                playSparkle();
+
+                setTimeout(() => {
+                  setVolume(volume);
+                }, 3000);
+              }
+
+              setRoyalBlossom(!royalBlossom);
+            }}
+          >
+            Click to toggle royal blossom
+          </button>
+        </div>
+      )}
+
+      {isPrincess && (
         <div className={styles.princessmusicselection}>
           <div className={styles.musicbar}>
             <div>
@@ -1469,7 +1491,7 @@ export default function Home() {
             {queue.map((song, idx) => (
               <button
                 style={{
-                  cursor: isPrincess ? "none" : "default",
+                  cursor: isPrincess ? "defaultio" : "default",
                 }}
                 key={idx}
                 className={clsx(
@@ -1616,7 +1638,7 @@ export default function Home() {
             <div
               className={styles.sigBox}
               style={{
-                cursor: isPrincess ? "none" : "default",
+                cursor: isPrincess ? "defaultio" : "default",
               }}
             >
               <Stage
@@ -1658,7 +1680,7 @@ export default function Home() {
             >
               <button
                 style={{
-                  cursor: isPrincess ? "none" : "default",
+                  cursor: isPrincess ? "defaultio" : "default",
                 }}
                 onClick={() => {
                   if (lines.length === 0) {
@@ -1679,7 +1701,7 @@ export default function Home() {
               </button>
               <button
                 style={{
-                  cursor: isPrincess ? "none" : "default",
+                  cursor: isPrincess ? "defaultio" : "default",
                 }}
                 onClick={() => {
                   setLines([]);
@@ -1729,7 +1751,7 @@ export default function Home() {
             <div
               className={styles.sigBox}
               style={{
-                cursor: isPrincess ? "none" : "default",
+                cursor: isPrincess ? "defaultio" : "default",
               }}
             >
               <Stage
@@ -1771,7 +1793,7 @@ export default function Home() {
             >
               <button
                 style={{
-                  cursor: isPrincess ? "none" : "default",
+                  cursor: isPrincess ? "defaultio" : "default",
                 }}
                 onClick={() => {
                   if (lines.length === 0) {
@@ -1780,14 +1802,20 @@ export default function Home() {
                   setLines([]);
                   setPinkifyContract(false);
                   setPinkify(true);
+                  // setPrevVol(volume);
+                  setVolume(0.15);
                   playPinkify();
+
+                  setTimeout(() => {
+                    setVolume(volume);
+                  }, 3000);
                 }}
               >
                 Confirm
               </button>
               <button
                 style={{
-                  cursor: isPrincess ? "none" : "default",
+                  cursor: isPrincess ? "defaultio" : "default",
                 }}
                 onClick={() => {
                   setLines([]);
@@ -1828,7 +1856,7 @@ export default function Home() {
         style={{
           background: "#757575",
           padding: "4px",
-          cursor: isPrincess ? "none" : "default",
+          cursor: isPrincess ? "defaultio" : "default",
         }}
       >
         {isPrincess
@@ -1876,7 +1904,7 @@ export default function Home() {
                 <SlidingNumber value={parseFloat(fps)} />
                 <input
                   style={{
-                    cursor: isPrincess ? "none" : "default",
+                    cursor: isPrincess ? "defaultio" : "default",
                   }}
                   type="range"
                   min="5"
@@ -1898,7 +1926,7 @@ export default function Home() {
                 {madeWithPrincessMode ? "on" : "off"}
                 <input
                   style={{
-                    cursor: isPrincess ? "none" : "default",
+                    cursor: isPrincess ? "defaultio" : "default",
                   }}
                   type="checkbox"
                   checked={madeWithPrincessMode}
@@ -1911,11 +1939,18 @@ export default function Home() {
                 {pinkify ? "on" : "off"}
                 <input
                   style={{
-                    cursor: isPrincess ? "none" : "default",
+                    cursor: isPrincess ? "defaultio" : "default",
                   }}
                   type="checkbox"
                   checked={pinkify}
-                  onChange={(e) => setPinkifyContract(true)}
+                  onChange={(e) => {
+                    if (pinkify) {
+                      setPinkify(false);
+                      return;
+                    }
+
+                    setPinkifyContract(true);
+                  }}
                 />
               </div>
             </>
@@ -1930,11 +1965,26 @@ export default function Home() {
             {squishText ? "on" : "off"}
             <input
               style={{
-                cursor: isPrincess ? "none" : "default",
+                cursor: isPrincess ? "defaultio" : "default",
               }}
               type="checkbox"
               checked={squishText}
               onChange={(e) => setSquishText(e.target.checked)}
+            />
+          </div>
+
+          <p className={styles.bottombartext}>
+            should the image be squished? (stretched)
+          </p>
+          <div className={styles.bottombaritem}>
+            {squishImg ? "on" : "off"}
+            <input
+              style={{
+                cursor: isPrincess ? "defaultio" : "default",
+              }}
+              type="checkbox"
+              checked={squishImg}
+              onChange={(e) => setSquishImg(e.target.checked)}
             />
           </div>
 
@@ -1945,7 +1995,7 @@ export default function Home() {
             <SlidingNumber value={parseFloat(quality)} />
             <input
               style={{
-                cursor: isPrincess ? "none" : "default",
+                cursor: isPrincess ? "defaultio" : "default",
               }}
               type="range"
               min="0"
@@ -1963,7 +2013,7 @@ export default function Home() {
             <SlidingNumber value={parseFloat(loops)} />
             <input
               style={{
-                cursor: isPrincess ? "none" : "default",
+                cursor: isPrincess ? "defaultio" : "default",
               }}
               type="range"
               min="0"
@@ -1981,7 +2031,7 @@ export default function Home() {
             <SlidingNumber value={parseFloat(subsample)} />
             <input
               style={{
-                cursor: isPrincess ? "none" : "default",
+                cursor: isPrincess ? "defaultio" : "default",
               }}
               type="range"
               min="0"
@@ -1999,7 +2049,7 @@ export default function Home() {
             {posterizebits ? "on" : "off"}
             <input
               style={{
-                cursor: isPrincess ? "none" : "default",
+                cursor: isPrincess ? "defaultio" : "default",
               }}
               type="checkbox"
               checked={posterizebits}
@@ -2012,7 +2062,7 @@ export default function Home() {
             <SlidingNumber value={parseFloat(brightness)} />
             <input
               style={{
-                cursor: isPrincess ? "none" : "default",
+                cursor: isPrincess ? "defaultio" : "default",
               }}
               type="range"
               min="0"
@@ -2028,7 +2078,7 @@ export default function Home() {
             <SlidingNumber value={parseFloat(contrast)} />
             <input
               style={{
-                cursor: isPrincess ? "none" : "default",
+                cursor: isPrincess ? "defaultio" : "default",
               }}
               type="range"
               min="0"
@@ -2047,7 +2097,7 @@ export default function Home() {
             {ghost ? "on" : "off"}
             <input
               style={{
-                cursor: isPrincess ? "none" : "default",
+                cursor: isPrincess ? "defaultio" : "default",
               }}
               type="checkbox"
               checked={ghost}
@@ -2063,7 +2113,7 @@ export default function Home() {
             <SlidingNumber value={parseFloat(ghostpacify)} />
             <input
               style={{
-                cursor: isPrincess ? "none" : "default",
+                cursor: isPrincess ? "defaultio" : "default",
               }}
               type="range"
               min="0"
@@ -2081,7 +2131,7 @@ export default function Home() {
             <SlidingNumber value={parseFloat(ghostshit)} />
             <input
               style={{
-                cursor: isPrincess ? "none" : "default",
+                cursor: isPrincess ? "defaultio" : "default",
               }}
               type="range"
               min="0"
@@ -2099,7 +2149,7 @@ export default function Home() {
             <SlidingNumber value={parseFloat(font)} />
             <input
               style={{
-                cursor: isPrincess ? "none" : "default",
+                cursor: isPrincess ? "defaultio" : "default",
               }}
               type="range"
               min="1"
@@ -2136,7 +2186,7 @@ export default function Home() {
               value={message}
               style={{
                 flex: "1",
-                cursor: isPrincess ? "none" : "default",
+                cursor: isPrincess ? "defaultio" : "default",
               }}
               placeholder={"Hello, My Goat :red-heart:"}
               onChange={(e) => setMessage(e.target.value)}
@@ -2150,7 +2200,7 @@ export default function Home() {
             {emojiGlows ? "on" : "off"}
             <input
               style={{
-                cursor: isPrincess ? "none" : "default",
+                cursor: isPrincess ? "defaultio" : "default",
               }}
               type="checkbox"
               checked={emojiGlows}
@@ -2163,7 +2213,7 @@ export default function Home() {
             <SlidingNumber value={parseFloat(emojiGlowLevel)} />
             <input
               style={{
-                cursor: isPrincess ? "none" : "default",
+                cursor: isPrincess ? "defaultio" : "default",
               }}
               type="range"
               min="0"
@@ -2184,7 +2234,7 @@ export default function Home() {
             >
               <input
                 style={{
-                  cursor: isPrincess ? "none" : "default",
+                  cursor: isPrincess ? "defaultio" : "default",
                 }}
                 type="text"
                 value={searchTerm}
@@ -2231,7 +2281,7 @@ export default function Home() {
                         },
                       }}
                       style={{
-                        cursor: isPrincess ? "none" : "default",
+                        cursor: isPrincess ? "defaultio" : "default",
                       }}
                       onClick={() => {
                         const txt = `:${r}:`;

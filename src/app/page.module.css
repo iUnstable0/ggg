@@ -401,3 +401,11 @@
   width: 200px;
   height: 300px;
 }
+
+.princesstoggleflower {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #ff8ef8;
+  padding: 8px;
+}
