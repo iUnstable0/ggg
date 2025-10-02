@@ -1304,6 +1304,22 @@ export default function Home() {
                   priority={true}
                 />
               ))}
+
+              <Image
+                key={`preload-book`}
+                src={"/book.jpg"}
+                alt={"book"}
+                width={1200}
+                height={1200}
+              />
+
+              <Image
+                key={`preload-orange`}
+                src={"/orange.png"}
+                alt={"orange"}
+                width={1200}
+                height={1200}
+              />
             </div>
 
             {lorePos === -1 && (
