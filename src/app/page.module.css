@@ -447,12 +447,12 @@
   height: 10%;
 
   position: absolute;
-  bottom: 40px;
-  right: 140px;
+  bottom: 10%;
+  right: 18%;
 
   cursor: pointer;
 
-  /* background: #ffffff5b; */
+  background: #ffffff5b;
 }
 
 .secretCtnBtnBook {
@@ -460,12 +460,12 @@
   height: 17%;
 
   position: absolute;
-  bottom: 100px;
-  left: 180px;
+  bottom: 25%;
+  left: 26%;
 
   cursor: pointer;
 
-  /* background: #ffffff5b; */
+  background: #ffffff5b;
 }
 
 .orangeJuiceCtn {
