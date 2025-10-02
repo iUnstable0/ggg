@@ -265,6 +265,7 @@ function FilePreview({
               }}
             >
               <motion.div
+                key={goatedImage}
                 transition={{
                   duration: 0.2,
                 }}
@@ -1477,10 +1478,24 @@ export default function Home() {
         <div className={styles.princessmusicselection}>
           <div className={styles.glowCtn}>
             <GlowEffect
-              colors={["#0894FF", "#C959DD", "#FF2E54", "#FF9004"]}
-              mode="colorShift"
+              colors={[
+                "#0894FF",
+                "#C959DD",
+                "#FF2E54",
+                "#FF9004",
+                "#0894FF",
+                "#C959DD",
+                "#FF2E54",
+                "#FF9004",
+                "#0894FF",
+                "#C959DD",
+                "#FF2E54",
+                "#FF9004",
+              ]}
+              mode="rotate"
+              l
               blur="medium"
-              duration={4}
+              duration={2}
             />
           </div>
 

@@ -184,6 +184,8 @@
   flex-direction: column;
   align-items: center;
 
+  padding: 8px;
+
   z-index: 100;
 
   .selection {
@@ -203,6 +205,8 @@
   .musicbarCtn {
     /* background: #ff8ef8; */
     padding: 8px;
+
+    outline: 8px solid #cccccc76;
 
     border-radius: 4px;
 
