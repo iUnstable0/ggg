@@ -455,6 +455,19 @@
   /* background: #ffffff5b; */
 }
 
+.secretCtnBtnBook {
+  width: 8%;
+  height: 17%;
+
+  position: absolute;
+  bottom: 100px;
+  left: 180px;
+
+  cursor: pointer;
+
+  /* background: #ffffff5b; */
+}
+
 .orangeJuiceCtn {
   position: fixed;
   inset: 0;

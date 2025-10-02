@@ -360,6 +360,13 @@ export default function Home() {
     interrupt: true,
   });
 
+  const [playBookPickup] = useSound("/sounds/bookpick.mp3", {
+    interrupt: true,
+  });
+  const [playBookPutaway] = useSound("/sounds/bookputaway.mp3", {
+    interrupt: true,
+  });
+
   const onDrop = useCallback((acceptedFiles: any) => {
     const file = acceptedFiles[0];
 
@@ -453,6 +460,7 @@ export default function Home() {
   const [princessConfirmation, setPrincessConfirmation] =
     useState<boolean>(false);
   const [showOrangeJuice, setShowOrangeJuice] = useState<boolean>(false);
+  const [showBook, setShowBook] = useState<boolean>(false);
 
   const [princessPlaying, setPrincessPlaying] = useState<number>(-1);
   const [firstPrincess, setFirstPrincess] = useState<boolean>(true);
@@ -1042,6 +1050,14 @@ export default function Home() {
   }, [showOrangeJuice]);
 
   useEffect(() => {
+    if (showBook) {
+      playBookPickup();
+    } else {
+      playBookPutaway();
+    }
+  }, [showBook]);
+
+  useEffect(() => {
     if (lorePos > 0 && princessLore && imgCtnRef.current) {
       const generateSparkle = () => {
         if (!imgCtnRef.current) return;
@@ -1519,6 +1535,19 @@ export default function Home() {
                       </div>
                     )}
 
+                    {lorePos === 5 && (
+                      <div className={styles.secretCtn}>
+                        <button
+                          className={styles.secretCtnBtnBook}
+                          onClick={() => {
+                            // if (confirm("Go to page 84?")) {
+                            setShowBook(true);
+                            // }
+                          }}
+                        />
+                      </div>
+                    )}
+
                     {sparkles.map(
                       ({
                         id,
@@ -1668,6 +1697,27 @@ export default function Home() {
                 </label>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {showBook && (
+        <div
+          className={styles.orangeJuiceCtn}
+          onClick={() => {
+            setShowBook(false);
+          }}
+        >
+          <div className={styles.orangeJuice}>
+            <div className={styles.orangeJuiceImageWrapper}>
+              <Image
+                src={"/book.jpg"}
+                alt={"royal emoji"}
+                width={1200}
+                height={1200}
+                className={styles.orangeJuiceImg}
+              />
+            </div>
           </div>
         </div>
       )}
