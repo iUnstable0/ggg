@@ -367,6 +367,13 @@ export default function Home() {
     interrupt: true,
   });
 
+  const [playPhonePickup] = useSound("/sounds/camerapick.mp3", {
+    interrupt: true,
+  });
+  const [playPhonePutaway] = useSound("/sounds/cameraputdown.mp3", {
+    interrupt: true,
+  });
+
   const onDrop = useCallback((acceptedFiles: any) => {
     const file = acceptedFiles[0];
 
@@ -461,6 +468,7 @@ export default function Home() {
     useState<boolean>(false);
   const [showOrangeJuice, setShowOrangeJuice] = useState<boolean>(false);
   const [showBook, setShowBook] = useState<boolean>(false);
+  const [showPhone, setShowPhone] = useState<boolean>(false);
 
   const [princessPlaying, setPrincessPlaying] = useState<number>(-1);
   const [firstPrincess, setFirstPrincess] = useState<boolean>(true);
@@ -1058,6 +1066,14 @@ export default function Home() {
   }, [showBook]);
 
   useEffect(() => {
+    if (showPhone) {
+      playPhonePickup();
+    } else {
+      playPhonePutaway();
+    }
+  }, [showPhone]);
+
+  useEffect(() => {
     if (lorePos > 0 && princessLore && imgCtnRef.current) {
       const generateSparkle = () => {
         if (!imgCtnRef.current) return;
@@ -1307,16 +1323,25 @@ export default function Home() {
 
               <Image
                 key={`preload-book`}
-                src={"/book.jpg"}
+                src={"/book.jpeg"}
                 alt={"book"}
                 width={1200}
                 height={1200}
+                l
               />
 
               <Image
                 key={`preload-orange`}
                 src={"/orange.png"}
                 alt={"orange"}
+                width={1200}
+                height={1200}
+              />
+
+              <Image
+                key={`preload-phone`}
+                src={"/phone.png"}
+                alt={"phone"}
                 width={1200}
                 height={1200}
               />
@@ -1564,6 +1589,28 @@ export default function Home() {
                       </div>
                     )}
 
+                    {lorePos === 8 && (
+                      <div className={styles.secretCtn}>
+                        <button
+                          className={styles.secretCtnBtnPhoneAte}
+                          onClick={() => {
+                            setShowPhone(true);
+                          }}
+                        />
+                      </div>
+                    )}
+
+                    {lorePos === 9 && (
+                      <div className={styles.secretCtn}>
+                        <button
+                          className={styles.secretCtnBtnPhoneNine}
+                          onClick={() => {
+                            setShowPhone(true);
+                          }}
+                        />
+                      </div>
+                    )}
+
                     {sparkles.map(
                       ({
                         id,
@@ -1642,10 +1689,14 @@ export default function Home() {
 
           <div className={styles.musicbarCtn}>
             <div className={styles.musicbar}>
-              <div>
+              <div className={styles.musicbarItem}>
                 <div>Royal FM 443 + 732 KHz</div>
-                <div>{queue[musicSelection][3] as string}</div>
-                {/* {duration} */}
+                <div className={styles.marqueeContainer}>
+                  <div className={styles.marqueeText}>
+                    {queue[musicSelection][3] as string}
+                  </div>
+                </div>
+
                 <button
                   onClick={() => {
                     setRoyalOptions(!royalOptions);
@@ -1727,7 +1778,28 @@ export default function Home() {
           <div className={styles.orangeJuice}>
             <div className={styles.orangeJuiceImageWrapper}>
               <Image
-                src={"/book.jpg"}
+                src={"/book.jpeg"}
+                alt={"royal emoji"}
+                width={1200}
+                height={1200}
+                className={styles.orangeJuiceImg}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showPhone && (
+        <div
+          className={styles.orangeJuiceCtn}
+          onClick={() => {
+            setShowPhone(false);
+          }}
+        >
+          <div className={styles.orangeJuice}>
+            <div className={styles.orangeJuiceImageWrapper}>
+              <Image
+                src={"/phone.png"}
                 alt={"royal emoji"}
                 width={1200}
                 height={1200}

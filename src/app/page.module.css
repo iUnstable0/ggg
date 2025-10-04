@@ -468,6 +468,31 @@
   /* background: #ffffff5b; */
 }
 
+.secretCtnBtnPhoneAte {
+  width: 4%;
+  height: 13%;
+
+  position: absolute;
+  bottom: 30%;
+  left: 21%;
+
+  cursor: pointer;
+
+  /* background: #ffffff5b; */
+}
+
+.secretCtnBtnPhoneNine {
+  width: 8%;
+  height: 17%;
+
+  position: absolute;
+  bottom: 47%;
+  left: 24%;
+
+  cursor: pointer;
+  /* background: #ffffff5b; */
+}
+
 .orangeJuiceCtn {
   position: fixed;
   inset: 0;
@@ -505,4 +530,24 @@
   height: auto !important;
   object-fit: contain;
   max-height: 100%;
+}
+
+.marqueeContainer {
+  max-width: 220px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.marqueeText {
+  display: inline-block;
+  animation: marqueeAnimation 12s linear infinite;
+}
+
+@keyframes marqueeAnimation {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
 }
