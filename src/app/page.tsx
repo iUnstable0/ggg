@@ -1327,7 +1327,6 @@ export default function Home() {
                 alt={"book"}
                 width={1200}
                 height={1200}
-                l
               />
 
               <Image
