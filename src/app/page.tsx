@@ -250,7 +250,7 @@ function FilePreview({
                   {...props}
                   onAnimationComplete={() => handleSparkleComplete(id)}
                 />
-              )
+              ),
             )}
 
           {!goatedImage && (
@@ -407,7 +407,7 @@ export default function Home() {
   const [sparkles, setSparkles] = useState<T_SparkleData>([]);
   const [goatedSparkles, setGoatedSparkles] = useState<T_SparkleData>([]);
   const [orangeJuiceSparkles, setOrangeJuiceSparkles] = useState<T_SparkleData>(
-    []
+    [],
   );
 
   const [gridView, setGridView] = useState(false);
@@ -515,7 +515,7 @@ export default function Home() {
       onend: () => setMusicSelection(1),
       volume,
       html5: true,
-    }
+    },
   );
 
   const [playWhirl, { stop: stopWhirl, pause: pauseWhirl }] = useSound(
@@ -526,7 +526,7 @@ export default function Home() {
       onend: () => setMusicSelection(2),
       volume,
       html5: true,
-    }
+    },
   );
 
   const [playRoyal1, { stop: stopRoyal1, pause: pauseRoyal1 }] = useSound(
@@ -537,7 +537,7 @@ export default function Home() {
       onend: () => setMusicSelection(3),
       volume,
       html5: true,
-    }
+    },
   );
 
   const [playRoyal2, { stop: stopRoyal2, pause: pauseRoyal2 }] = useSound(
@@ -548,7 +548,7 @@ export default function Home() {
       onend: () => setMusicSelection(4),
       volume,
       html5: true,
-    }
+    },
   );
 
   const [playRoyal3, { stop: stopRoyal3, pause: pauseRoyal3 }] = useSound(
@@ -559,7 +559,7 @@ export default function Home() {
       onend: () => setMusicSelection(5),
       volume,
       html5: true,
-    }
+    },
   );
 
   const [playChristmas, { stop: stopChristmas, pause: pauseChristmas }] =
@@ -586,59 +586,59 @@ export default function Home() {
 
   const [playLore1, { stop: stopLore1 }] = useSound(
     "/sounds/goodnightgoatloreaudio_1.mp3",
-    { interrupt: true, loop: true }
+    { interrupt: true, loop: true },
   );
   const [playLore2, { stop: stopLore2 }] = useSound(
     "/sounds/goodnightgoatloreaudio_2.mp3",
-    { interrupt: true, loop: true }
+    { interrupt: true, loop: true },
   );
   const [playLore3, { stop: stopLore3 }] = useSound(
     "/sounds/goodnightgoatloreaudio_3.mp3",
-    { interrupt: true, loop: true }
+    { interrupt: true, loop: true },
   );
   const [playLore4, { stop: stopLore4 }] = useSound(
     "/sounds/goodnightgoatloreaudio_4.mp3",
-    { interrupt: true, loop: true }
+    { interrupt: true, loop: true },
   );
   const [playLore5, { stop: stopLore5 }] = useSound(
     "/sounds/goodnightgoatloreaudio_5.mp3",
-    { interrupt: true, loop: true }
+    { interrupt: true, loop: true },
   );
   const [playLore6, { stop: stopLore6 }] = useSound(
     "/sounds/goodnightgoatloreaudio_6.mp3",
-    { interrupt: true, loop: true }
+    { interrupt: true, loop: true },
   );
   const [playLore7, { stop: stopLore7 }] = useSound(
     "/sounds/goodnightgoatloreaudio_7.mp3",
-    { interrupt: true, loop: true }
+    { interrupt: true, loop: true },
   );
   const [playLore8, { stop: stopLore8 }] = useSound(
     "/sounds/goodnightgoatloreaudio_8.mp3",
-    { interrupt: true, loop: true }
+    { interrupt: true, loop: true },
   );
   const [playLore9, { stop: stopLore9 }] = useSound(
     "/sounds/goodnightgoatloreaudio_9.mp3",
-    { interrupt: true, loop: true }
+    { interrupt: true, loop: true },
   );
   const [playLore10, { stop: stopLore10 }] = useSound(
     "/sounds/goodnightgoatloreaudio_10.mp3",
-    { interrupt: true, loop: true }
+    { interrupt: true, loop: true },
   );
   const [playLore11, { stop: stopLore11 }] = useSound(
     "/sounds/goodnightgoatloreaudio_11.mp3",
-    { interrupt: true, loop: true }
+    { interrupt: true, loop: true },
   );
   const [playLore12, { stop: stopLore12 }] = useSound(
     "/sounds/goodnightgoatloreaudio_12.mp3",
-    { interrupt: true, loop: true }
+    { interrupt: true, loop: true },
   );
   const [playLore13, { stop: stopLore13 }] = useSound(
     "/sounds/goodnightgoatloreaudio_13.mp3",
-    { interrupt: true, loop: true }
+    { interrupt: true, loop: true },
   );
   const [playLore14, { stop: stopLore14 }] = useSound(
     "/sounds/goodnightgoatloreaudio_14.mp3",
-    { interrupt: true, loop: true }
+    { interrupt: true, loop: true },
   );
 
   const loreAudio = [
@@ -832,13 +832,13 @@ export default function Home() {
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/delete`,
         {
           name: goatName,
-        }
+        },
       );
 
       console.log(res.data);
     } catch (error) {
       console.error(
-        "Error deleting old goat lol it will delete on its own anyway "
+        "Error deleting old goat lol it will delete on its own anyway ",
       );
     }
 
@@ -905,11 +905,11 @@ export default function Home() {
           onUploadProgress: (pg) => {
             setUploadPg(pg.progress || 0);
           },
-        }
+        },
       );
 
       setGoatedImage(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/files/${res.data.filename}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/files/${res.data.filename}`,
       );
 
       if (isPrincess) {
@@ -938,11 +938,11 @@ export default function Home() {
           onUploadProgress: (pg) => {
             setUploadPg(pg.progress || 0);
           },
-        }
+        },
       );
 
       setGoatedImage(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/files/${res.data.filename}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/files/${res.data.filename}`,
       );
 
       if (isPrincess) {
@@ -1033,19 +1033,19 @@ export default function Home() {
 
   const handleSparkleComplete = useCallback((id: any) => {
     setSparkles((prevSparkles) =>
-      prevSparkles.filter((sparkle) => sparkle.id !== id)
+      prevSparkles.filter((sparkle) => sparkle.id !== id),
     );
   }, []);
 
   const handleGoatedSparkleComplete = useCallback((id: any) => {
     setGoatedSparkles((prevSparkles) =>
-      prevSparkles.filter((sparkle) => sparkle.id !== id)
+      prevSparkles.filter((sparkle) => sparkle.id !== id),
     );
   }, []);
 
   const handleOrangeJuiceSparkleComplete = useCallback((id: any) => {
     setOrangeJuiceSparkles((prevSparkles) =>
-      prevSparkles.filter((sparkle) => sparkle.id !== id)
+      prevSparkles.filter((sparkle) => sparkle.id !== id),
     );
   }, []);
 
@@ -1119,7 +1119,7 @@ export default function Home() {
             }
           }
         },
-        lorePos === 12 ? 1 : 5
+        lorePos === 12 ? 1 : 5,
       );
 
       return () => clearInterval(interval);
@@ -1327,7 +1327,6 @@ export default function Home() {
                 alt={"book"}
                 width={1200}
                 height={1200}
-                l
               />
 
               <Image
@@ -1628,7 +1627,7 @@ export default function Home() {
                           {...props}
                           onAnimationComplete={() => handleSparkleComplete(id)}
                         />
-                      )
+                      ),
                     )}
                   </div>
                 </motion.div>
@@ -1713,7 +1712,7 @@ export default function Home() {
                   key={idx}
                   className={clsx(
                     styles.selection,
-                    musicSelection === idx && styles.selected
+                    musicSelection === idx && styles.selected,
                   )}
                   onClick={(e) => {
                     setMusicSelection(idx);
@@ -1837,7 +1836,7 @@ export default function Home() {
                     handleOrangeJuiceSparkleComplete(id)
                   }
                 />
-              )
+              ),
             )}
 
             <div
